@@ -1,8 +1,8 @@
 <template>
     <form>
-        <input type="text" v-model="todo">
+        <input v-model="todo" type="text">
         <button @click.prevent="addToDo">Submit</button>
-        <button @click="todos= []">Clear</button>
+        <button @click="clearToDo">Clear</button>
     </form>
     <ul v-for="item in todos" :key="item">
         <li>{{ item }}<button @click="removeToDo(item)">Delete</button></li>
@@ -15,19 +15,23 @@ import { ref, Ref } from 'vue';
         const todos: Ref<string[]> = ref([]) 
 
         function addToDo() {
-            if (todo.value) {
-                if (!todos.value.includes(todo.value)) {
-                    todos.value.push(todo.value)
-                }
-                todo.value = ""
+            if (!todo.value || todos.value.includes(todo.value)) {
+                return
             }
+
+            todos.value.push(todo.value)
+            todo.value = ""                
         }
 
         function removeToDo(item: string) {
-            let index: number = todos.value.indexOf(item)
+            const index = todos.value.indexOf(item)
             if (index > -1) {
                 todos.value.splice(index, 1)
             }
+        }
+
+        function clearToDo() {
+            todos.value = []
         }
 
 </script>
