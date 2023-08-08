@@ -4,7 +4,7 @@
         <button @click.prevent="addToDo">Submit</button>
         <button @click="todos= []">Clear</button>
     </form>
-    <ul v-for="item in todos">
+    <ul v-for="item in todos" :key="item">
         <li>{{ item }}<button @click="removeToDo(item)">Delete</button></li>
     </ul>
 </template>
