@@ -1,26 +1,21 @@
 <template>
-    <form>
-        <input v-model="todo" type="text">
-        <button @click.prevent="addToDo">Submit</button>
-        <button @click="clearToDo">Clear</button>
-    </form>
-    <ul v-for="item in todos" :key="item">
-        <li>{{ item }}<button @click="removeToDo(item)">Delete</button></li>
-    </ul>
+    <ToDoForm @addToDo="addToDo" @clearToDo="clearToDo"/>
+    <ShowToDo :todos="todos" @deleteToDo="removeToDo" />
 </template>
 
 <script setup lang="ts">
+import ToDoForm from './components/ToDoForm.vue'
+import ShowToDo from './components/ShowToDo.vue'
 import { ref, Ref } from 'vue';
-        const todo = ref("")
         const todos: Ref<string[]> = ref([]) 
 
-        function addToDo() {
-            if (!todo.value || todos.value.includes(todo.value)) {
+        function addToDo(todo: string) {
+            if (!todo || todos.value.includes(todo)) {
                 return
             }
 
-            todos.value.push(todo.value)
-            todo.value = ""                
+            todos.value.push(todo)
+            todo = ""      
         }
 
         function removeToDo(item: string) {
