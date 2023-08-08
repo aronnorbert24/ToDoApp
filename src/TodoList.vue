@@ -10,9 +10,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-        const todo: string = ref("")
-        const todos: string[] = ref([]) 
+import { ref, Ref } from 'vue';
+        const todo = ref("")
+        const todos: Ref<string[]> = ref([]) 
 
         function addToDo() {
             if (todo.value) {
@@ -23,7 +23,7 @@ import { ref } from 'vue';
             }
         }
 
-        function removeToDo(item) {
+        function removeToDo(item: string) {
             let index: number = todos.value.indexOf(item)
             if (index > -1) {
                 todos.value.splice(index, 1)
