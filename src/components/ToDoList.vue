@@ -9,7 +9,3 @@
 
     const emit = defineEmits(['deleteToDo'])
 </script>
-
-<style scoped>
-
-</style>
