@@ -1,4 +1,5 @@
 <template>
+	<ToDoHeader />
   <ToDoForm @addToDo="addToDo" @clearToDo="clearToDo"/>
   <ToDoList :todos="todos" @deleteToDo="removeToDo" />
 </template>
@@ -6,6 +7,7 @@
 <script setup lang="ts">
   import ToDoForm from './ToDoForm.vue'
   import ToDoList from './ToDoList.vue'
+	import ToDoHeader from './ToDoHeader.vue'
   import { ref, Ref } from 'vue';
   const todos: Ref<string[]> = ref([]) 
 
