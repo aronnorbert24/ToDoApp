@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
 import './style.css'
-import ToDoList from './TodoList.vue'
+import App from './App.vue'
 
-createApp(ToDoList).mount('#app')
+createApp(App).mount('#app')
