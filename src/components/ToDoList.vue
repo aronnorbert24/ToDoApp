@@ -9,5 +9,5 @@
   import EmptyListImage from './EmptyListImage.vue'
   defineProps(['todos'])
 
-  const emit = defineEmits(['deleteToDo'])
+const emit = defineEmits(['deleteToDo'])
 </script>
