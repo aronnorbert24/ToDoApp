@@ -1,6 +1,5 @@
 <template>
   <ToDoHeader @showForm="toggleForm" />
-  <button v-if="todos.length" @click.prevent="clearToDo" class="float-right bg-red-600 text-white">Clear</button>
   <ToDoForm v-show="isShowingForm" @addToDo="addToDo" @clearToDo="clearToDo" @closeForm="toggleForm" />
   <ToDoList :todos="todos" @deleteToDo="removeToDo" />
 </template>
