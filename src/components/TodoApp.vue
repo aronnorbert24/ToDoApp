@@ -1,6 +1,7 @@
 <template>
-	<ToDoHeader />
-  <ToDoForm @addToDo="addToDo" @clearToDo="clearToDo"/>
+  <ToDoHeader @show="toggleForm"/>
+  <button v-if="todos.length" @click.prevent="clearToDo" class="bg-red-600 text-white float-right">Clear</button>
+  <ToDoForm v-show="showForm" @addToDo="addToDo" @clearToDo="clearToDo" @closeForm="toggleForm"/>
   <ToDoList :todos="todos" @deleteToDo="removeToDo" />
 </template>
 
@@ -10,6 +11,7 @@
 	import ToDoHeader from './ToDoHeader.vue'
   import { ref, Ref } from 'vue';
   const todos: Ref<string[]> = ref([]) 
+  const showForm: Ref<boolean> = ref(false)
 
   function addToDo(todo: string) {
     if (todos.value.includes(todo)) {
@@ -28,6 +30,10 @@
 
   function clearToDo() {
     todos.value = []
+  }
+
+  function toggleForm() {
+    showForm.value = !showForm.value
   }
 
 </script>
