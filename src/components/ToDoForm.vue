@@ -1,8 +1,7 @@
 <template>
   <form>
-    <input v-model="todo" type="text" placeholder="Add your To-Do item">
+    <input v-model="todo" type="text" placeholder="Add your To-Do item" class="border-2 border-slate-200 rounded-xl text-center">
     <button @click.prevent="handleClick" >Submit</button>
-    <button @click.prevent="emit('clearToDo')">Clear</button>
   </form>
 </template>
 
@@ -10,7 +9,7 @@
 	import { ref } from 'vue';
   const todo = ref("")
 
-  const emit = defineEmits(['addToDo', 'clearToDo'])
+  const emit = defineEmits(['addToDo'])
 
   function handleClick() {
     if (todo.value.length) {
