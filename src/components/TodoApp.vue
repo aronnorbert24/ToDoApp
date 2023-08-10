@@ -1,43 +1,40 @@
 <template>
-  <ToDoHeader @show="toggleForm"/>
-  <button v-if="todos.length" @click.prevent="clearToDo" class="bg-red-600 text-white float-right">Clear</button>
-  <ToDoForm v-show="showForm" @addToDo="addToDo" @clearToDo="clearToDo" @closeForm="toggleForm"/>
+  <ToDoHeader @show="toggleForm" />
+  <button v-if="todos.length" @click.prevent="clearToDo" class="float-right bg-red-600 text-white">Clear</button>
+  <ToDoForm v-show="showForm" @addToDo="addToDo" @clearToDo="clearToDo" @closeForm="toggleForm" />
   <ToDoList :todos="todos" @deleteToDo="removeToDo" />
 </template>
 
 <script setup lang="ts">
-  import ToDoForm from './ToDoForm.vue'
-  import ToDoList from './ToDoList.vue'
-	import ToDoHeader from './ToDoHeader.vue'
-  import { ref, Ref } from 'vue';
-  const todos: Ref<string[]> = ref([]) 
-  const showForm: Ref<boolean> = ref(false)
+import ToDoForm from './ToDoForm.vue'
+import ToDoList from './ToDoList.vue'
+import ToDoHeader from './ToDoHeader.vue'
+import { ref, Ref } from 'vue'
+const todos: Ref<string[]> = ref([])
+const showForm: Ref<boolean> = ref(false)
 
-  function addToDo(todo: string) {
-    if (todos.value.includes(todo)) {
-      return
-    }
-
-    todos.value.push(todo)      
+function addToDo(todo: string) {
+  if (todos.value.includes(todo)) {
+    return
   }
 
-  function removeToDo(item: string) {
-    const index = todos.value.indexOf(item)
-    if (index > -1) {
-      todos.value.splice(index, 1)
-    }
-  }
+  todos.value.push(todo)
+}
 
-  function clearToDo() {
-    todos.value = []
+function removeToDo(item: string) {
+  const index = todos.value.indexOf(item)
+  if (index > -1) {
+    todos.value.splice(index, 1)
   }
+}
 
-  function toggleForm() {
-    showForm.value = !showForm.value
-  }
+function clearToDo() {
+  todos.value = []
+}
 
+function toggleForm() {
+  showForm.value = !showForm.value
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

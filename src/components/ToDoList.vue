@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-  defineProps(['todos'])
+defineProps(['todos'])
 
-  const emit = defineEmits(['deleteToDo'])
+const emit = defineEmits(['deleteToDo'])
 </script>
