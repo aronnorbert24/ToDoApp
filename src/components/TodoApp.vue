@@ -1,35 +1,39 @@
 <template>
-  <ToDoForm @addToDo="addToDo" @clearToDo="clearToDo"/>
+  <ToDoHeader @showForm="toggleForm" />
+  <ToDoForm v-show="isShowingForm" @addToDo="addToDo" @clearToDo="clearToDo" @closeForm="toggleForm" />
   <ToDoList :todos="todos" @deleteToDo="removeToDo" />
 </template>
 
 <script setup lang="ts">
-  import ToDoForm from './ToDoForm.vue'
-  import ToDoList from './ToDoList.vue'
-  import { ref, Ref } from 'vue';
-  const todos: Ref<string[]> = ref([]) 
+import ToDoForm from './ToDoForm.vue'
+import ToDoList from './ToDoList.vue'
+import ToDoHeader from './ToDoHeader.vue'
+import { ref, Ref } from 'vue'
+const todos: Ref<string[]> = ref([])
+const isShowingForm: Ref<boolean> = ref(false)
 
-  function addToDo(todo: string) {
-    if (todos.value.includes(todo)) {
-      return
-    }
-
-    todos.value.push(todo)      
+function addToDo(todo: string) {
+  if (todos.value.includes(todo)) {
+    return
   }
 
-  function removeToDo(item: string) {
-    const index = todos.value.indexOf(item)
-    if (index > -1) {
-      todos.value.splice(index, 1)
-    }
-  }
+  todos.value.push(todo)
+}
 
-  function clearToDo() {
-    todos.value = []
+function removeToDo(item: string) {
+  const index = todos.value.indexOf(item)
+  if (index > -1) {
+    todos.value.splice(index, 1)
   }
+}
 
+function clearToDo() {
+  todos.value = []
+}
+
+function toggleForm() {
+  isShowingForm.value = !isShowingForm.value
+}
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
