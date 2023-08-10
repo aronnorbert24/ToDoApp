@@ -8,7 +8,7 @@
       </p>
     </div>
     <div
-      @click="emit('show')"
+      @click="emit('showForm')"
       class="left-72 mb-8 flex h-16 w-16 cursor-pointer items-center justify-center rounded-full border-none bg-transparent outline-none transition-transform duration-300 ease-in-out hover:scale-110"
     >
       <PlusIcon />
@@ -19,5 +19,5 @@
 <script setup lang="ts">
 import PlusIcon from './PlusIcon.vue'
 
-const emit = defineEmits(['show'])
+const emit = defineEmits(['showForm'])
 </script>
