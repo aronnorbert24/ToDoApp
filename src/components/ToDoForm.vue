@@ -1,6 +1,6 @@
 <template>
   <form>
-    <input v-model="todo" type="text">
+    <input v-model="todo" type="text" placeholder="Add your To-Do item">
     <button @click.prevent="handleClick" >Submit</button>
     <button @click.prevent="emit('clearToDo')">Clear</button>
   </form>
