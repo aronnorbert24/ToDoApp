@@ -1,27 +1,25 @@
 <template>
   <form>
-    <input
-      v-model="todo"
-      type="text"
-      placeholder="Add your To-Do item"
-      class="rounded-xl border-2 border-slate-200 text-center"
-    />
-    <button @click.prevent="handleClick">Submit</button>
+    <button @click.prevent="handleClick">Add</button>
   </form>
 </template>
 
 <script setup lang="ts">
+import { Todo } from '../todo.ts'
 import { ref } from 'vue'
-const todo = ref('')
 
 const emit = defineEmits(['addToDo'])
 
+const todo = ref<Todo>({
+  title: 'Title',
+  description: 'blahblah',
+  priority: 'Medium',
+  isChecked: false
+})
+
 function handleClick() {
-  if (todo.value.length) {
+  if (todo.value.title.length) {
     emit('addToDo', todo.value)
-    todo.value = ''
   }
 }
 </script>
-
-<style scoped></style>
