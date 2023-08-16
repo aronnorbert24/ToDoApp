@@ -5,8 +5,14 @@ export default {
     extend: {
       fontFamily: {
         header: ['Neue Haas Grotesk Display Pro', 'sans-serif'],
+        priority: ['Inter', 'sans-serif'],
+        title: ['SF Pro Text', 'sans-serif']
       },
     },
+    screens: {
+      'phone': {'max': '800px'},
+      'computer': '801px'
+    }
   },
   plugins: [],
 }
