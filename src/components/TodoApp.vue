@@ -37,5 +37,4 @@ function toggleForm() {
   isShowingForm.value = !isShowingForm.value
 }
 </script>
-
 <style scoped></style>

@@ -48,5 +48,4 @@
   function getCheckedColor(isChecked: boolean) {
     return isChecked ? 'border-green-500' : 'border-black'
   }
-
 </script>

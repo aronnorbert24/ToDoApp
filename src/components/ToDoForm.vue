@@ -1,5 +1,5 @@
 <template>
-    <button @click.prevent="handleClick">Add</button>
+    <button @click.prevent="handleClick">Add</button
 </template>
 
 <script setup lang="ts">
