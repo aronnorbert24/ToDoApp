@@ -1,17 +1,41 @@
 <template>
-    <div class="phone:flex phone:space-x-4 phone:items-center phone:flex-row-reverse phone:justify-between w-full phone:h-[82px] h-fit mt-8 bg-transparent border-2 border-black rounded-2xl">
-    <div class="flex justify-between items-center">
-      <input type="text" class="flex phone:mr-44 items-center justify-center w-8/12 h-12 phone:mt-0 mt-4 phone:ml-0 ml-6 phone:font-medium font-semibold font-title phone:text-lg text-4xl phone:leading-5 leading-10 text-black" placeholder="Title">
-      <select class="phone:hidden flex items-center justify-center mt-4 mr-6 w-28 h-8 rounded-3xl text-priority font-semibold text-lg text-center text-white bg-amber-500 border-0">
+  <div
+    class="mt-8 h-fit w-full rounded-2xl border-2 border-black bg-transparent phone:flex phone:h-[82px] phone:flex-row-reverse phone:items-center phone:justify-between phone:space-x-4"
+  >
+    <div class="flex items-center justify-between">
+      <input
+        type="text"
+        class="ml-6 mt-4 flex h-12 w-8/12 items-center justify-center font-title text-4xl font-semibold leading-10 text-black phone:ml-0 phone:mr-44 phone:mt-0 phone:text-lg phone:font-medium phone:leading-5"
+        :placeholder="todo.title"
+        v-model="todo.title"
+      />
+      <select
+        class="text-priority mr-6 mt-4 flex h-8 w-28 items-center justify-center rounded-3xl border-0 bg-amber-500 text-center text-lg font-semibold text-white phone:hidden"
+      >
         <option value="Low">Low</option>
         <option value="Medium">Medium</option>
         <option value="High">High</option>
       </select>
     </div>
-    <textarea type="text" class="flex ml-6 indent-1 text-left mt-4 h-24 font-header font-semibold text-2xl text-black" placeholder="Description"></textarea>
-    <div class="flex justify-start items-center mt-6">
-      <button @click.prevent="handleClick" class="w-28 h-12 bg-green-400 rounded-2xl font-header font-semibold text-lg text-white leading-6 ml-6 mb-4">Save</button>
-      <button @click.prevent class="w-28 h-12 bg-neutral-200 rounded-2xl font-header font-semibold text-lg text-black leading-6 ml-4 mb-4">Delete</button>
+    <textarea
+      type="text"
+      class="ml-6 mt-4 flex h-24 text-left indent-1 font-header text-2xl font-semibold text-black"
+      :placeholder="todo.description"
+      v-model="todo.description"
+    ></textarea>
+    <div class="mt-6 flex items-center justify-start">
+      <button
+        @click.prevent="saveTodo"
+        class="mb-4 ml-6 h-12 w-28 rounded-2xl bg-green-400 font-header text-lg font-semibold leading-6 text-white"
+      >
+        Save
+      </button>
+      <button
+        @click.prevent
+        class="mb-4 ml-4 h-12 w-28 rounded-2xl bg-neutral-200 font-header text-lg font-semibold leading-6 text-black"
+      >
+        Delete
+      </button>
     </div>
   </div>
 </template>
@@ -26,12 +50,13 @@ const todo = ref<Todo>({
   title: 'Title',
   description: 'blahblah',
   priority: 'Medium',
-  isChecked: false
+  isChecked: false,
 })
 
-function handleClick() {
-  if (todo.value.title.length) {
-    emit('addToDo', todo.value)
+function saveTodo() {
+  if (!todo.value.title.length) {
+    return
   }
+  emit('addToDo', todo.value)
 }
 </script>

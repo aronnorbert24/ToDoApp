@@ -1,6 +1,6 @@
 <template>
   <ToDoHeader @showForm="toggleForm" />
-  <ToDoForm v-show="isShowingForm" @addToDo="addToDo" @clearToDo="clearToDo" @closeForm="toggleForm" />
+  <ToDoForm v-if="isShowingForm" @addToDo="addToDo" @clearToDo="clearToDo" @closeForm="toggleForm" />
   <EmptyListImage v-if="isShowingEmptyImage" class="ml-auto mr-auto"/>
   <ToDoList :todos="todos" @deleteToDo="removeToDo" />
 </template>
@@ -18,7 +18,13 @@ const isShowingForm: Ref<boolean> = ref(false)
 const isShowingEmptyImage = computed(() => !isShowingForm.value && !todos.value.length)
 
 function addToDo(todo: Todo) {
-  todos.value.push(todo)
+  const newTodo = {
+    title: todo.title,
+    description: todo.description,
+    priority: todo.priority,
+    isChecked: todo.isChecked
+  };
+  todos.value.unshift(newTodo)
   toggleForm()
 }
 
