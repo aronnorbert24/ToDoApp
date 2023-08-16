@@ -6,12 +6,13 @@
 </template>
 
 <script setup lang="ts">
+import { ref, Ref, computed } from 'vue'
 import ToDoForm from './ToDoForm.vue'
 import ToDoList from './ToDoList.vue'
 import ToDoHeader from './ToDoHeader.vue'
 import EmptyListImage from './EmptyListImage.vue'
 import { Todo } from '../todo.ts'
-import { ref, Ref, computed } from 'vue'
+
 const todos = ref<Todo[]>([])
 const isShowingForm: Ref<boolean> = ref(false)
 const isShowingEmptyImage = computed(() => !isShowingForm.value && !todos.value.length)
