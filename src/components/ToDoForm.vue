@@ -48,7 +48,7 @@ const emit = defineEmits(['addToDo'])
 
 const todo = ref<Todo>({
   title: 'Title',
-  description: 'blahblah',
+  description: 'Description',
   priority: 'Medium',
   isChecked: false,
 })
