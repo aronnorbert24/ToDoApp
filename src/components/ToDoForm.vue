@@ -1,12 +1,10 @@
 <template>
-  <form>
     <button @click.prevent="handleClick">Add</button>
-  </form>
 </template>
 
 <script setup lang="ts">
-import { Todo } from '../todo.ts'
 import { ref } from 'vue'
+import { Todo } from '../todo.ts'
 
 const emit = defineEmits(['addToDo'])
 

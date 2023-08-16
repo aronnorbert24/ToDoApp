@@ -18,7 +18,7 @@ const isShowingEmptyImage = computed(() => !isShowingForm.value && !todos.value.
 
 function addToDo(todo: Todo) {
   todos.value.push(todo)
-  isShowingForm.value = !isShowingForm.value
+  toggleForm()
 }
 
 function removeToDo(item: string) {
