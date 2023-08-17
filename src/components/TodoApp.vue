@@ -1,8 +1,10 @@
 <template>
-  <ToDoHeader @showForm="toggleForm" />
-  <ToDoForm v-if="isShowingForm" @addToDo="addToDo" @clearToDo="clearToDo" @closeForm="toggleForm" />
-  <EmptyListImage v-if="isShowingEmptyImage" class="ml-auto mr-auto"/>
-  <ToDoList :todos="todos" @deleteToDo="removeToDo" />
+  <div @click.self="closeForm" class="h-full">
+    <ToDoHeader @showForm="toggleForm" />
+    <ToDoForm v-if="isShowingForm" @addToDo="addToDo" @deleteToDo="toggleForm" @closeForm="toggleForm" />
+    <EmptyListImage v-if="isShowingEmptyImage" class="ml-auto mr-auto"/>
+    <ToDoList :todos="todos" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -28,19 +30,21 @@ function addToDo(todo: Todo) {
   toggleForm()
 }
 
-function removeToDo(item: string) {
+function removeToDo() {
   const index = todos.value.indexOf(item)
   if (index > -1) {
     todos.value.splice(index, 1)
   }
 }
 
-function clearToDo() {
-  todos.value = []
-}
-
 function toggleForm() {
   isShowingForm.value = !isShowingForm.value
+}
+
+function closeForm() {
+  if (isShowingForm.value) {
+    isShowingForm.value = !isShowingForm.value
+  }
 }
 </script>
 <style scoped></style>
