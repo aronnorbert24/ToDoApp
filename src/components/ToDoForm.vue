@@ -6,16 +6,16 @@
       <input
         type="text"
         class="phone:h-6 phone:w-48 phone:text-lg phone:ml-4 indent-0.5 ml-6 mt-4 flex h-12 w-8/12 items-center justify-center font-title text-4xl font-semibold leading-10 text-black"
-        :placeholder="todo.title"
-        v-model="todo.title"
+        :placeholder="updatedToDo.title"
+        v-model="updatedToDo.title"
       />
       <ToDoPriority :priority="todo.priority" @updateNewPriority="updateNewPriority"/>
     </div>
     <textarea
       type="text"
       class="phone:w-56 phone:h-20 phone:ml-4 phone:font-normal phone:text-sm phone:leading-4 phone:text-neutral-500 ml-6 mt-4 flex h-24 text-left indent-1 font-header text-2xl font-semibold text-black"
-      :placeholder="todo.description"
-      v-model="todo.description"
+      :placeholder="updatedToDo.description"
+      v-model="updatedToDo.description"
     ></textarea>
     <div class="mt-6 flex items-center justify-start">
       <button
@@ -39,27 +39,41 @@ import { ref } from 'vue'
 import ToDoPriority from './ToDoPriority.vue'
 import { Todo } from '../todo.ts'
 
-const emit = defineEmits(['addToDo', 'deleteToDo'] )
+interface Props {
+    todo: Todo
+    index: number
+  }
 
-const todo = ref<Todo>({
-  title: 'Title',
-  description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur atque labore id quod suscipit perferendis mollitia veniam tempore inventore.',
-  priority: 'Medium',
-  isChecked: false,
-})
+const props = defineProps<Props>()
+
+const emit = defineEmits(['addToDo', 'deleteToDo', 'editToDo'] )
+
+const updatedToDo = ref(props.todo)
 
 function updateNewPriority(priority: string) {
-  todo.value.priority = priority
+  updatedToDo.value.priority = priority
 }
 
 function saveTodo() {
-  if (!todo.value.title.length) {
+  if (!updatedToDo.value.title.length) {
     return
   }
-  emit('addToDo', todo.value)
+
+  if (props.index === -1) {
+    emit('addToDo', updatedToDo.value)
+    defaultToDo()
+    return
+  }
+  emit('editToDo', updatedToDo.value, props.index)
+}
+
+function defaultToDo() {
+  updatedToDo.value.title = 'Title',
+  updatedToDo.value.description = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur atque labore id quod suscipit perferendis mollitia veniam tempore inventore.',
+  updatedToDo.value.priority = 'Medium'
 }
 
 function deleteToDo() {
-  emit('deleteToDo')
+  emit('deleteToDo', props.index)
 }
 </script>
