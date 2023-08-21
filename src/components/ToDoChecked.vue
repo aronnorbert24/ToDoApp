@@ -1,5 +1,5 @@
 <template>
-  <div @click="toggleCheck"
+  <div @click.prevent="toggleCheck"
   :class="getCheckedColor(checked)">
     <CheckedIcon v-if="checked" class="absolute phone:h-6 phone:w-6 left-0 bottom-0"/>
   </div>
@@ -15,7 +15,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-let checked = ref(props.isChecked)
+const checked = ref(props.isChecked)
 
 function getCheckedColor(isChecked: boolean) {
     return isChecked ? 'border-green-500' : 'border-black'

@@ -8,7 +8,7 @@
         {{ newPriority }}
         <ArrowDown class="ml-4" :class="{ 'stroke-black': isDropdownShowing, 'stroke-white': !isDropdownShowing }" />
   </div>
-  <ul v-if="isDropdownShowing" class="absolute w-32 h-fit bg-white border-2 border-black rounded-2xl list-none">
+  <ul v-if="isDropdownShowing" class="absolute w-32 h-fit mt-2 bg-white border-2 border-black rounded-2xl list-none" ref="hideDropdownRef">
     <li v-for="priority in priorityList" :key="priority">
       <p @click="updatePriority(priority)" class="font-priority font-semibold text-lg leading-7 text-left pl-4 rounded-2xl text-black hover:text-white "
       :class="getDropdownClass(priority)">{{ priority }}</p>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { onClickOutside } from '@vueuse/core';
 import ArrowDown from './ArrowDown.vue'
 
  interface Props {
@@ -38,9 +39,11 @@ import ArrowDown from './ArrowDown.vue'
 
  const emit = defineEmits<{
   (e: 'updateNewPriority', priority: string): void
+  (e: 'getFadeoutClass', isDropdownShowing: boolean): void
  }>()
 
  const isDropdownShowing = ref(false)
+ const hideDropdownRef = ref(null)
  const classObject = computed(() => ({
   'text-white': !isDropdownShowing.value,
   'border-0': !isDropdownShowing.value,
@@ -83,5 +86,9 @@ import ArrowDown from './ArrowDown.vue'
 
  function toggleDropdown() {
   isDropdownShowing.value = !isDropdownShowing.value
+
+  emit('getFadeoutClass', isDropdownShowing.value)
  }
+
+ onClickOutside(hideDropdownRef, toggleDropdown)
 </script>
