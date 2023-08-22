@@ -1,8 +1,5 @@
 <template>
-  <div
-    @click.self="toggleEditState"
-    class="relative z-0 mt-8 h-fit w-full rounded-2xl border-2 border-black bg-transparent"
-  >
+  <div class="relative z-0 mt-8 h-fit w-full rounded-2xl border-2 border-black bg-transparent">
     <div
       v-if="isDropdownShowing || isDeletePopupVisible"
       class="absolute h-full w-full bg-black opacity-50 phone:hidden"
@@ -74,7 +71,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const emit = defineEmits(['addToDo', 'deleteToDo', 'editToDo', 'toggleEditState'])
+const emit = defineEmits(['addToDo', 'deleteToDo', 'editToDo'])
 
 const updatedToDo = ref<Todo>({
   title: props.todo.title,
@@ -107,10 +104,6 @@ function setDropdownVisibility(isShowing: boolean) {
 
 function toggleDeletePopup() {
   isDeletePopupVisible.value = !isDeletePopupVisible.value
-}
-
-function toggleEditState() {
-  emit('toggleEditState')
 }
 
 function saveTodo() {
