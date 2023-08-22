@@ -57,24 +57,13 @@ const emit = defineEmits<{
 
 const isDropdownShowing = ref(false)
 const hideDropdownRef = ref(null)
-const classObject = computed(() => ({
-  'text-white': !isDropdownShowing.value,
-  'border-0': !isDropdownShowing.value,
-  'text-black': isDropdownShowing.value,
-  'bg-white': isDropdownShowing.value,
-  'border-2': isDropdownShowing.value,
-  'border-black': isDropdownShowing.value,
-}))
+const classObject = computed(() =>
+  isDropdownShowing.value ? ['text-black', 'bg-white', 'border-2', 'border-black'] : ['text-white', 'border-0']
+)
 
-const popupClass = computed(() => ({
-  relative: isDropdownShowing.value,
-  static: !isDropdownShowing.value,
-}))
+const popupClass = computed(() => (isDropdownShowing.value ? 'relative' : 'static'))
 
-const arrowClass = computed(() => ({
-  'stroke-white': !isDropdownShowing.value,
-  'stroke-black': isDropdownShowing.value,
-}))
+const arrowClass = computed(() => (isDropdownShowing.value ? 'stroke-black' : 'stroke-white'))
 
 const dropdownClass: Record<string, string> = {
   High: 'hover:bg-rose-500',
