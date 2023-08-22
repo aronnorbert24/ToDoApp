@@ -27,7 +27,7 @@ import { Todo } from '../todo.ts'
 const todos = ref<Todo[]>(getFromLocalStorage())
 const isShowingForm: Ref<boolean> = ref(false)
 const isShowingEmptyImage = computed(() => !isShowingForm.value && !todos.value)
-let i = -1
+const i = -1
 const closeFormRef = ref(null)
 const todo = ref<Todo>({
   title: 'Title',
@@ -75,8 +75,7 @@ function editToDo(todo: Todo, index: number) {
     isChecked: todo.isChecked,
     dueDate: todo.dueDate,
   }
-  i = index
-  todos.value[i] = newTodo
+  todos.value[index] = newTodo
   saveToLocalStorage()
 }
 

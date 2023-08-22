@@ -22,13 +22,12 @@
     </div>
     <div>
       <input
+        v-model="toDoDate"
         type="date"
         name="dueDate"
         id="dueDate"
-        :placeholder="toDoDate"
         min="2023-08-20"
         max="2025-12-31"
-        v-model="toDoDate"
         class="ml-6 flex flex-row-reverse phone:ml-4"
       />
     </div>
@@ -88,7 +87,15 @@ const updatedToDo = ref<Todo>({
 const isDropdownShowing = ref(false)
 const isDeletePopupVisible = ref(false)
 const hideDeletePopupRef = ref(null)
-const toDoDate = ref('2023-08-20')
+const toDoDate = ref(formatDate())
+
+function formatDate() {
+  const date = new Date(updatedToDo.value.dueDate)
+  const year = date.getFullYear()
+  const month = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
+  return `${year}-${month}-${day}`
+}
 
 function updateNewPriority(priority: string) {
   updatedToDo.value.priority = priority
