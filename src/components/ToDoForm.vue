@@ -25,10 +25,10 @@
         type="date"
         name="dueDate"
         id="dueDate"
-        :placeholder="updatedToDo.dueDate"
+        :placeholder="toDoDate"
         min="2023-08-20"
         max="2025-12-31"
-        v-model="updatedToDo.dueDate"
+        v-model="toDoDate"
         class="ml-6 flex flex-row-reverse phone:ml-4"
       />
     </div>
@@ -88,6 +88,7 @@ const updatedToDo = ref<Todo>({
 const isDropdownShowing = ref(false)
 const isDeletePopupVisible = ref(false)
 const hideDeletePopupRef = ref(null)
+const toDoDate = ref('2023-08-20')
 
 function updateNewPriority(priority: string) {
   updatedToDo.value.priority = priority
@@ -106,6 +107,7 @@ function toggleEditState() {
 }
 
 function saveTodo() {
+  updatedToDo.value.dueDate = new Date(toDoDate.value)
   if (!updatedToDo.value.title.length) {
     return
   }
