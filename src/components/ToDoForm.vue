@@ -61,6 +61,7 @@ import { onClickOutside } from '@vueuse/core'
 import ToDoPriority from './ToDoPriority.vue'
 import DeletePopup from './DeletePopup.vue'
 import { Todo } from '../todo.ts'
+import { formatDate } from '../helper/helpers.ts'
 
 interface Props {
   todo: Todo
@@ -82,16 +83,8 @@ const updatedToDo = ref<Todo>({
 const isDropdownShowing = ref(false)
 const isDeletePopupVisible = ref(false)
 const hideDeletePopupRef = ref(null)
-const toDoDate = ref(formatDate(updatedToDo.value.dueDate))
-const currentDate = ref(formatDate(new Date()))
-
-function formatDate(formattingDate: Date) {
-  const date = new Date(formattingDate)
-  const year = date.getFullYear()
-  const month = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
-  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
-  return `${year}-${month}-${day}`
-}
+const toDoDate = ref(formatDate(updatedToDo.value.dueDate, 'form'))
+const currentDate = ref(formatDate(new Date(), 'form'))
 
 function updateNewPriority(priority: string) {
   updatedToDo.value.priority = priority

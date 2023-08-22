@@ -59,6 +59,7 @@ import ToDoForm from './ToDoForm.vue'
 import ToDoChecked from './ToDoChecked.vue'
 import DateIcon from './DateIcon.vue'
 import { Todo } from '../todo.ts'
+import { formatDate } from '../helper/helpers'
 
 interface Props {
   todo: Todo
@@ -80,19 +81,16 @@ const priorityClass: Record<string, string> = {
 
 const isFormEditable = ref(false)
 const closeFormRef = ref(null)
+const formattedDate = computed(() => {
+  return formatDate(props.todo.dueDate, 'item')
+})
 
-const getPriorityClass = (priority: string) => priorityClass[priority]
+function getPriorityClass(priority: string) {
+  return priorityClass[priority]
+}
 
 const getEditFormClass = computed(() => {
   return isFormEditable.value ? 'hidden phone:hidden' : 'block'
-})
-
-const formattedDate = computed(() => {
-  const date = new Date(props.todo.dueDate)
-  const year = date.getFullYear()
-  const month = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
-  const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
-  return `${day}.${month}.${year}`
 })
 
 function toggleEditState() {

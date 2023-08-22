@@ -88,11 +88,11 @@ const priorityClass: Record<string, string> = {
   Low: 'bg-cyan-400',
 }
 
-const getPriorityClass = (priority: string) => {
+function getPriorityClass(priority: string) {
   return priorityClass[priority]
 }
 
-const getDropdownClass = (priority: string) => {
+function getDropdownClass(priority: string) {
   return dropdownClass[priority]
 }
 
