@@ -1,5 +1,5 @@
 <template>
-  <div @click.prevent="toggleCheck" :class="getCheckedColor(checked)">
+  <div @click="toggleCheck" :class="getCheckedColor(checked)">
     <CheckedIcon v-if="checked" class="absolute bottom-0 left-0 phone:h-6 phone:w-6" />
   </div>
 </template>
@@ -14,6 +14,10 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const emit = defineEmits<{
+  (e: 'checkToDo', checked: boolean): void
+}>()
+
 const checked = ref(props.isChecked)
 
 function getCheckedColor(isChecked: boolean) {
@@ -22,5 +26,6 @@ function getCheckedColor(isChecked: boolean) {
 
 function toggleCheck() {
   checked.value = !checked.value
+  emit('checkToDo', checked.value)
 }
 </script>

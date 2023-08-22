@@ -54,7 +54,6 @@ function addToDo(todo: Todo) {
     isChecked: todo.isChecked,
     dueDate: todo.dueDate,
   }
-  console.log(todos.value)
   todos.value.unshift(newTodo)
   saveToLocalStorage()
   toggleForm()

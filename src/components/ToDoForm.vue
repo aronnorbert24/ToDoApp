@@ -1,9 +1,7 @@
 <template>
   <div class="relative z-0 mt-8 h-fit w-full rounded-2xl border-2 border-black bg-transparent">
-    <div
-      v-if="isDropdownShowing || isDeletePopupVisible"
-      class="absolute h-full w-full bg-black opacity-50 phone:hidden"
-    ></div>
+    <div v-if="isDropdownShowing" class="absolute h-full w-full bg-black opacity-50 phone:hidden"></div>
+    <div v-if="isDeletePopupVisible" class="absolute h-full w-full bg-black opacity-50 phone:hidden"></div>
     <div class="flex items-center justify-between">
       <input
         type="text"
@@ -23,7 +21,7 @@
         type="date"
         name="dueDate"
         id="dueDate"
-        min="2023-08-20"
+        :min="currentDate"
         max="2025-12-31"
         class="ml-6 flex flex-row-reverse phone:ml-4"
       />
@@ -84,10 +82,11 @@ const updatedToDo = ref<Todo>({
 const isDropdownShowing = ref(false)
 const isDeletePopupVisible = ref(false)
 const hideDeletePopupRef = ref(null)
-const toDoDate = ref(formatDate())
+const toDoDate = ref(formatDate(updatedToDo.value.dueDate))
+const currentDate = ref(formatDate(new Date()))
 
-function formatDate() {
-  const date = new Date(updatedToDo.value.dueDate)
+function formatDate(formattingDate: Date) {
+  const date = new Date(formattingDate)
   const year = date.getFullYear()
   const month = date.getMonth() < 9 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
   const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate()
@@ -107,10 +106,10 @@ function toggleDeletePopup() {
 }
 
 function saveTodo() {
-  updatedToDo.value.dueDate = new Date(toDoDate.value)
   if (!updatedToDo.value.title.length) {
     return
   }
+  updatedToDo.value.dueDate = new Date(toDoDate.value)
 
   if (props.index === -1) {
     emit('addToDo', updatedToDo.value)

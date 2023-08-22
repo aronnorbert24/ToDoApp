@@ -1,12 +1,12 @@
 <template>
-  <div class="relative mr-8 w-28 phone:hidden">
+  <div class="mr-8 w-28 phone:hidden" :class="popupClass">
     <div
       @click="toggleDropdown"
       class="text-priority mr-6 mt-4 flex h-8 w-32 items-center justify-center rounded-3xl text-center text-lg font-semibold phone:hidden"
       :class="[classObject, getPriorityClass(newPriority)]"
     >
       {{ newPriority }}
-      <ArrowDown class="ml-4" :class="{ 'stroke-black': isDropdownShowing, 'stroke-white': !isDropdownShowing }" />
+      <ArrowDown class="ml-4" :class="arrowClass" />
     </div>
     <ul
       v-if="isDropdownShowing"
@@ -66,6 +66,16 @@ const classObject = computed(() => ({
   'border-black': isDropdownShowing.value,
 }))
 
+const popupClass = computed(() => ({
+  relative: isDropdownShowing.value,
+  static: !isDropdownShowing.value,
+}))
+
+const arrowClass = computed(() => ({
+  'stroke-white': !isDropdownShowing.value,
+  'stroke-black': isDropdownShowing.value,
+}))
+
 const dropdownClass: Record<string, string> = {
   High: 'hover:bg-rose-500',
   Medium: 'hover:bg-amber-500',
@@ -86,7 +96,7 @@ const getDropdownClass = (priority: string) => {
   return dropdownClass[priority]
 }
 
-let newPriority = ref(props.priority)
+const newPriority = ref(props.priority)
 const priorityList = ['Low', 'Medium', 'High']
 
 function updatePriority(priority: string) {
