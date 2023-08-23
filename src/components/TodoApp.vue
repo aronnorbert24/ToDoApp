@@ -1,6 +1,7 @@
 <template>
   <div @click.self="closeForm" class="h-full">
     <ToDoHeader @showForm="toggleForm" />
+    <ToDoSearch v-if="todos.length" />
     <ToDoForm
       v-if="isShowingForm"
       :id="i"
@@ -27,6 +28,7 @@ import { onClickOutside } from '@vueuse/core'
 import ToDoForm from './ToDoForm.vue'
 import ToDoList from './ToDoList.vue'
 import ToDoHeader from './ToDoHeader.vue'
+import ToDoSearch from './ToDoSearch.vue'
 import EmptyListImage from './EmptyListImage.vue'
 import { Todo } from '../todo.ts'
 
