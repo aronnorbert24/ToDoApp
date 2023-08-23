@@ -1,7 +1,7 @@
 <template>
   <div @click.self="closeForm" class="h-full">
     <ToDoHeader @showForm="toggleForm" />
-    <ToDoSearch v-if="todos.length" />
+    <ToDoSearch v-if="todos.length" @searchToDos="searchToDos" />
     <ToDoForm
       v-if="isShowingForm"
       :id="i"
@@ -40,6 +40,8 @@ const isShowingEmptyImage = computed(
 )
 const closeFormRef = ref(null)
 const i = -1
+const closeFormRef = ref(null)
+const searchQuery = ref('')
 const todo = ref<Todo>({
   title: 'Title',
   description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
@@ -47,6 +49,19 @@ const todo = ref<Todo>({
   isChecked: false,
   dueDate: new Date(),
   id: -1,
+})
+
+const filteredToDo = computed(() => {
+  if (searchQuery.value) {
+    return todos.value.filter((todo) => {
+      const searchSmall = searchQuery.value.toLowerCase()
+      const titleSmall = todo.title.toLowerCase()
+      const descSmall = todo.description.toLowerCase()
+      return titleSmall.includes(searchSmall) || descSmall.includes(searchSmall)
+    })
+  } else {
+    return todos.value
+  }
 })
 
 function saveToLocalStorage() {
@@ -150,6 +165,10 @@ function toggleForm() {
 
 function closeForm() {
   isShowingForm.value = false
+}
+
+function searchToDos(item: string) {
+  searchQuery.value = item
 }
 
 onClickOutside(closeFormRef, toggleForm)
