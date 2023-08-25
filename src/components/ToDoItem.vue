@@ -11,7 +11,7 @@
         >
           {{ todo.title }}
         </p>
-        <p class="ml-6 flex items-center justify-between text-xs phone:ml-4 phone:mt-2 phone:text-gray-300">
+        <p class="ml-6 flex items-center text-xs phone:ml-4 phone:mt-2 phone:text-gray-300">
           <DateIcon class="mb-2 mr-1 mt-2 flex items-center" />
           {{ formattedDate }}
         </p>
@@ -34,8 +34,9 @@
         {{ todo.description }}
       </p>
       <ToDoChecked
+        :key="todo.id"
         :isChecked="todo.isChecked"
-        @checkToDo="checkToDo($event, todo, index)"
+        @checkToDo="checkToDo"
         class="relative mb-4 mr-6 h-10 w-10 rounded-full border-8 hover:cursor-pointer phone:mr-0 phone:h-6 phone:w-6 phone:border-4"
       />
     </div>
@@ -44,7 +45,6 @@
   <ToDoForm
     v-if="isFormEditable"
     :todo="todo"
-    :index="index"
     @editToDo="editToDo"
     @deleteToDo="deleteToDo"
     @toggleEditState="toggleEditState"
@@ -63,14 +63,14 @@ import { formatDate } from '../helper/helpers'
 
 interface Props {
   todo: Todo
-  index: number
 }
 
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  (e: 'editToDo', todo: Todo, index: number): void
-  (e: 'deleteToDo', index: number): void
+  (e: 'editToDo', todo: Todo, which: string): void
+  (e: 'deleteToDo', id: number, which: string): void
+  (e: 'toggleCheck', checked: boolean, id: number): void
 }>()
 
 const priorityClass: Record<string, string> = {
@@ -97,19 +97,19 @@ function toggleEditState() {
   isFormEditable.value = !isFormEditable.value
 }
 
-function checkToDo(checked: boolean, updatedToDo: Todo, index: number) {
-  props.todo.isChecked = checked
-  editToDo(updatedToDo, index)
+function checkToDo(checked: boolean) {
+  toggleEditState()
+  emit('toggleCheck', checked, props.todo.id)
 }
 
-function editToDo(todo: Todo, index: number) {
+function editToDo(todo: Todo) {
   toggleEditState()
-  emit('editToDo', todo, index)
+  emit('editToDo', todo, props.todo.isChecked ? 'complete' : 'incomplete')
 }
 
-function deleteToDo(index: number) {
+function deleteToDo(id: number) {
   toggleEditState()
-  emit('deleteToDo', index)
+  emit('deleteToDo', id, props.todo.isChecked ? 'complete' : 'incomplete')
 }
 
 onClickOutside(closeFormRef, toggleEditState)

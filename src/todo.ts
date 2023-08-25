@@ -4,4 +4,5 @@ export interface Todo {
   priority: string
   isChecked: boolean
   dueDate: Date
+  id: number
 }

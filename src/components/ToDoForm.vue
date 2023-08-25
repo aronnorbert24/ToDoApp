@@ -65,7 +65,6 @@ import { formatDate } from '../helper/helpers.ts'
 
 interface Props {
   todo: Todo
-  index: number
 }
 
 const props = defineProps<Props>()
@@ -78,6 +77,7 @@ const updatedToDo = ref<Todo>({
   priority: props.todo.priority,
   isChecked: props.todo.isChecked,
   dueDate: props.todo.dueDate,
+  id: props.todo.id,
 })
 
 const isDropdownShowing = ref(false)
@@ -103,16 +103,15 @@ function saveTodo() {
     return
   }
   updatedToDo.value.dueDate = new Date(toDoDate.value)
-
-  if (props.index === -1) {
+  if (updatedToDo.value.id === -1) {
     emit('addToDo', updatedToDo.value)
     return
   }
-  emit('editToDo', updatedToDo.value, props.index)
+  emit('editToDo', updatedToDo.value)
 }
 
 function deleteToDo() {
-  emit('deleteToDo', props.index)
+  emit('deleteToDo', props.todo.id)
 }
 
 onClickOutside(hideDeletePopupRef, toggleDeletePopup)
