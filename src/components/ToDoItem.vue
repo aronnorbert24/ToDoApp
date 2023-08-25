@@ -105,20 +105,12 @@ function checkToDo(checked: boolean) {
 
 function editToDo(todo: Todo) {
   toggleEditState()
-  if (props.todo.isChecked) {
-    emit('editToDo', todo, 'complete')
-  } else {
-    emit('editToDo', todo, 'incomplete')
-  }
+  emit('editToDo', todo, props.todo.isChecked ? 'complete' : 'incomplete')
 }
 
 function deleteToDo(index: number) {
   toggleEditState()
-  if (props.todo.isChecked) {
-    emit('deleteToDo', index, 'complete')
-  } else {
-    emit('deleteToDo', index, 'incomplete')
-  }
+  emit('deleteToDo', index, props.todo.isChecked ? 'complete' : 'incomplete')
 }
 
 onClickOutside(closeFormRef, toggleEditState)

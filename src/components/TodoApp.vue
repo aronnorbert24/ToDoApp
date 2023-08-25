@@ -68,37 +68,34 @@ function toggleCheck(checked: boolean, index: number) {
     if (updatedTodo) {
       updatedTodo.isChecked = checked
     }
+    animateDown(index)
   } else {
     const updatedTodo = completeTodos.value.find((todo) => todo.id === index)
     if (updatedTodo) {
       updatedTodo.isChecked = checked
     }
-  }
-  if (checked) {
-    animateDown(index)
-  } else {
     animateUp(index)
   }
 }
 
 function animateDown(index: number) {
-  const copyToDo = incompleteTodos.value.find((todo) => todo.id === index)
-  if (!copyToDo) {
+  const i = incompleteTodos.value.findIndex((todo) => todo.id === index)
+  const copyToDo = incompleteTodos.value.splice(i, 1)
+  if (!copyToDo[0]) {
     return
   }
-  incompleteTodos.value = incompleteTodos.value.filter((todo) => todo.id !== index)
 
-  completeTodos.value.push(copyToDo)
+  completeTodos.value.push(copyToDo[0])
   saveToLocalStorage()
 }
 
 function animateUp(index: number) {
-  const copyToDo = completeTodos.value.find((todo) => todo.id === index)
-  if (!copyToDo) {
+  const i = completeTodos.value.findIndex((todo) => todo.id === index)
+  const copyToDo = completeTodos.value.splice(i, 1)
+  if (!copyToDo[0]) {
     return
   }
-  completeTodos.value = completeTodos.value.filter((todo) => todo.id !== index)
-  incompleteTodos.value.unshift(copyToDo)
+  incompleteTodos.value.unshift(copyToDo[0])
   saveToLocalStorage()
 }
 
@@ -117,12 +114,10 @@ function addToDo(todo: Todo) {
 }
 
 function removeToDo(id: number, which: string) {
-  if (id !== todo.value.id) {
-    if (which === 'complete') {
-      completeTodos.value = completeTodos.value.filter((todo) => todo.id !== id)
-    } else {
-      incompleteTodos.value = incompleteTodos.value.filter((todo) => todo.id !== id)
-    }
+  if (which === 'complete') {
+    completeTodos.value = completeTodos.value.filter((todo) => todo.id !== id)
+  } else {
+    incompleteTodos.value = incompleteTodos.value.filter((todo) => todo.id !== id)
   }
   saveToLocalStorage()
 }

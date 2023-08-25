@@ -3,8 +3,6 @@
     <li v-for="incompleteTodo in incompleteTodos" :key="incompleteTodo.id">
       <ToDoItem :todo="incompleteTodo" @editToDo="editToDo" @deleteToDo="deleteToDo" @toggleCheck="toggleCheck" />
     </li>
-  </transition-group>
-  <transition-group name="todo" tag="ul" class="relative">
     <li v-for="completeTodo in completeTodos" :key="completeTodo.id">
       <ToDoItem :todo="completeTodo" @editToDo="editToDo" @deleteToDo="deleteToDo" @toggleCheck="toggleCheck" />
     </li>
