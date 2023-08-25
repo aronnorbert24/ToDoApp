@@ -1,10 +1,14 @@
 <template>
   <div @click.self="closeForm" class="h-full">
     <ToDoHeader @showForm="toggleForm" />
+<<<<<<< develop
     <ToDoSearch v-if="filteredTodos.length || searchQuery.length" @searchToDos="searchToDos" />
     <p v-if="!filteredTodos.length && searchQuery.length" class="mt-6 font-header text-xl font-semibold text-black">
       There are no todos with that title/description
     </p>
+=======
+    <ToDoSort v-if="todos.length" />
+>>>>>>> WIP on feature/ITL-6-Add-sorting-functionality added arrows plus hover feature
     <ToDoForm
       v-if="isShowingForm"
       :todo="todo"
@@ -24,7 +28,11 @@ import { onClickOutside } from '@vueuse/core'
 import ToDoForm from './ToDoForm.vue'
 import ToDoList from './ToDoList.vue'
 import ToDoHeader from './ToDoHeader.vue'
+<<<<<<< develop
 import ToDoSearch from './ToDoSearch.vue'
+=======
+import ToDoSort from './ToDoSort.vue'
+>>>>>>> WIP on feature/ITL-6-Add-sorting-functionality added arrows plus hover feature
 import EmptyListImage from './EmptyListImage.vue'
 import { Todo } from '../todo.ts'
 
