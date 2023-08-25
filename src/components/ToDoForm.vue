@@ -65,7 +65,6 @@ import { formatDate } from '../helper/helpers.ts'
 
 interface Props {
   todo: Todo
-  id: number
 }
 
 const props = defineProps<Props>()
@@ -104,7 +103,7 @@ function saveTodo() {
     return
   }
   updatedToDo.value.dueDate = new Date(toDoDate.value)
-  if (props.id === -1) {
+  if (updatedToDo.value.id === -1) {
     emit('addToDo', updatedToDo.value)
     return
   }

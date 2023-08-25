@@ -45,7 +45,6 @@
   <ToDoForm
     v-if="isFormEditable"
     :todo="todo"
-    :id="todo.id"
     @editToDo="editToDo"
     @deleteToDo="deleteToDo"
     @toggleEditState="toggleEditState"
@@ -70,8 +69,8 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'editToDo', todo: Todo, which: string): void
-  (e: 'deleteToDo', index: number, which: string): void
-  (e: 'toggleCheck', checked: boolean, index: number): void
+  (e: 'deleteToDo', id: number, which: string): void
+  (e: 'toggleCheck', checked: boolean, id: number): void
 }>()
 
 const priorityClass: Record<string, string> = {
@@ -108,9 +107,9 @@ function editToDo(todo: Todo) {
   emit('editToDo', todo, props.todo.isChecked ? 'complete' : 'incomplete')
 }
 
-function deleteToDo(index: number) {
+function deleteToDo(id: number) {
   toggleEditState()
-  emit('deleteToDo', index, props.todo.isChecked ? 'complete' : 'incomplete')
+  emit('deleteToDo', id, props.todo.isChecked ? 'complete' : 'incomplete')
 }
 
 onClickOutside(closeFormRef, toggleEditState)

@@ -44,7 +44,7 @@ const todo = ref<Todo>({
   priority: 'Medium',
   isChecked: false,
   dueDate: new Date(),
-  id: new Date().getTime(),
+  id: -1,
 })
 
 function saveToLocalStorage() {
@@ -62,25 +62,25 @@ function getCompletedFromLocalStorage() {
   return savedCompleteTodos ? JSON.parse(savedCompleteTodos) : []
 }
 
-function toggleCheck(checked: boolean, index: number) {
+function toggleCheck(checked: boolean, id: number) {
   if (checked) {
-    const updatedTodo = incompleteTodos.value.find((todo) => todo.id === index)
+    const updatedTodo = incompleteTodos.value.find((todo) => todo.id === id)
     if (updatedTodo) {
       updatedTodo.isChecked = checked
     }
-    animateDown(index)
+    animateDown(id)
   } else {
-    const updatedTodo = completeTodos.value.find((todo) => todo.id === index)
+    const updatedTodo = completeTodos.value.find((todo) => todo.id === id)
     if (updatedTodo) {
       updatedTodo.isChecked = checked
     }
-    animateUp(index)
+    animateUp(id)
   }
 }
 
-function animateDown(index: number) {
-  const i = incompleteTodos.value.findIndex((todo) => todo.id === index)
-  const copyToDo = incompleteTodos.value.splice(i, 1)
+function animateDown(id: number) {
+  const index = incompleteTodos.value.findIndex((todo) => todo.id === id)
+  const copyToDo = incompleteTodos.value.splice(index, 1)
   if (!copyToDo[0]) {
     return
   }
@@ -89,9 +89,9 @@ function animateDown(index: number) {
   saveToLocalStorage()
 }
 
-function animateUp(index: number) {
-  const i = completeTodos.value.findIndex((todo) => todo.id === index)
-  const copyToDo = completeTodos.value.splice(i, 1)
+function animateUp(id: number) {
+  const index = completeTodos.value.findIndex((todo) => todo.id === id)
+  const copyToDo = completeTodos.value.splice(index, 1)
   if (!copyToDo[0]) {
     return
   }
