@@ -3,7 +3,7 @@
     <ToDoHeader @showForm="toggleForm" />
     <ToDoForm
       v-if="isShowingForm"
-      :index="i"
+      :id="i"
       :todo="todo"
       @addToDo="addToDo"
       @deleteToDo="toggleForm"
@@ -11,7 +11,13 @@
       ref="closeFormRef"
     />
     <EmptyListImage v-if="isShowingEmptyImage" class="ml-auto mr-auto" />
-    <ToDoList :todos="todos" @editToDo="editToDo" @deleteToDo="removeToDo" />
+    <ToDoList
+      :incompleteTodos="incompleteTodos"
+      :completeTodos="completeTodos"
+      @editToDo="editToDo"
+      @deleteToDo="removeToDo"
+      @toggleCheck="toggleCheck"
+    />
   </div>
 </template>
 
@@ -24,26 +30,76 @@ import ToDoHeader from './ToDoHeader.vue'
 import EmptyListImage from './EmptyListImage.vue'
 import { Todo } from '../todo.ts'
 
-const todos = ref<Todo[]>(getFromLocalStorage())
+const incompleteTodos = ref<Todo[]>(getIncompletedFromLocalStorage())
+const completeTodos = ref<Todo[]>(getCompletedFromLocalStorage())
 const isShowingForm: Ref<boolean> = ref(false)
-const isShowingEmptyImage = computed(() => !isShowingForm.value && !todos.value)
-const i = -1
+const isShowingEmptyImage = computed(
+  () => !isShowingForm.value && !incompleteTodos.value.length && !completeTodos.value.length
+)
 const closeFormRef = ref(null)
+const i = -1
 const todo = ref<Todo>({
   title: 'Title',
   description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
   priority: 'Medium',
   isChecked: false,
   dueDate: new Date(),
+  id: new Date().getTime(),
 })
 
 function saveToLocalStorage() {
-  localStorage.setItem('todos', JSON.stringify(todos.value))
+  localStorage.setItem('incompleteTodos', JSON.stringify(incompleteTodos.value))
+  localStorage.setItem('completeTodos', JSON.stringify(completeTodos.value))
 }
 
-function getFromLocalStorage() {
-  const savedTodos = localStorage.getItem('todos')
-  return savedTodos ? JSON.parse(savedTodos) : []
+function getIncompletedFromLocalStorage() {
+  const savedIncompleteTodos = localStorage.getItem('incompleteTodos')
+  return savedIncompleteTodos ? JSON.parse(savedIncompleteTodos) : []
+}
+
+function getCompletedFromLocalStorage() {
+  const savedCompleteTodos = localStorage.getItem('completeTodos')
+  return savedCompleteTodos ? JSON.parse(savedCompleteTodos) : []
+}
+
+function toggleCheck(checked: boolean, index: number) {
+  if (checked) {
+    const updatedTodo = incompleteTodos.value.find((todo) => todo.id === index)
+    if (updatedTodo) {
+      updatedTodo.isChecked = checked
+    }
+  } else {
+    const updatedTodo = completeTodos.value.find((todo) => todo.id === index)
+    if (updatedTodo) {
+      updatedTodo.isChecked = checked
+    }
+  }
+  if (checked) {
+    animateDown(index)
+  } else {
+    animateUp(index)
+  }
+}
+
+function animateDown(index: number) {
+  const copyToDo = incompleteTodos.value.find((todo) => todo.id === index)
+  if (!copyToDo) {
+    return
+  }
+  incompleteTodos.value = incompleteTodos.value.filter((todo) => todo.id !== index)
+
+  completeTodos.value.push(copyToDo)
+  saveToLocalStorage()
+}
+
+function animateUp(index: number) {
+  const copyToDo = completeTodos.value.find((todo) => todo.id === index)
+  if (!copyToDo) {
+    return
+  }
+  completeTodos.value = completeTodos.value.filter((todo) => todo.id !== index)
+  incompleteTodos.value.unshift(copyToDo)
+  saveToLocalStorage()
 }
 
 function addToDo(todo: Todo) {
@@ -53,28 +109,41 @@ function addToDo(todo: Todo) {
     priority: todo.priority,
     isChecked: todo.isChecked,
     dueDate: todo.dueDate,
+    id: new Date().getTime(),
   }
-  todos.value.unshift(newTodo)
+  incompleteTodos.value.unshift(newTodo)
   saveToLocalStorage()
   toggleForm()
 }
 
-function removeToDo(index: number) {
-  if (index > -1) {
-    todos.value.splice(index, 1)
+function removeToDo(id: number, which: string) {
+  if (id !== todo.value.id) {
+    if (which === 'complete') {
+      completeTodos.value = completeTodos.value.filter((todo) => todo.id !== id)
+    } else {
+      incompleteTodos.value = incompleteTodos.value.filter((todo) => todo.id !== id)
+    }
   }
   saveToLocalStorage()
 }
 
-function editToDo(todo: Todo, index: number) {
+function editToDo(todo: Todo, which: string) {
   const newTodo = {
     title: todo.title,
     description: todo.description,
     priority: todo.priority,
     isChecked: todo.isChecked,
     dueDate: todo.dueDate,
+    id: todo.id,
   }
-  todos.value[index] = newTodo
+  if (which === 'complete') {
+    const index: number = completeTodos.value.findIndex((todo) => todo.id === newTodo.id)
+    completeTodos.value[index] = newTodo
+  } else {
+    const index: number = incompleteTodos.value.findIndex((todo) => todo.id === newTodo.id)
+    incompleteTodos.value[index] = newTodo
+  }
+
   saveToLocalStorage()
 }
 
