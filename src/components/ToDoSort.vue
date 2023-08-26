@@ -5,8 +5,12 @@
         v-for="button in buttons"
         :key="button"
         class="px-15 border-px ml-4 flex h-8 w-32 items-center justify-center rounded-lg font-header text-sm font-semibold leading-4 transition-transform duration-300 ease-in-out hover:scale-110 hover:border-black hover:bg-black hover:text-white"
-        :class="activeSortClass"
-        @click="toggleActiveSort"
+        :class="[
+          activeSort === button && isSortActive === true
+            ? ['border-green-400', 'bg-green-400', 'text-white']
+            : ['border-black', 'bg-white', 'text-black'],
+        ]"
+        @click="toggleActiveSort(button)"
       >
         {{ button }}
       </button>
@@ -14,10 +18,14 @@
     <div class="ml-auto flex h-8 w-5/12 items-center justify-between">
       <div
         class="border-px ml-auto mr-3 flex h-8 w-9 items-center justify-between rounded-lg border-green-400 bg-green-400"
+        @click="toggleSortOrder('ascending')"
       >
         <ArrowUp class="ml-auto mr-auto" />
       </div>
-      <div class="border-px flex h-8 w-9 items-center justify-center rounded-lg border-black bg-black">
+      <div
+        class="border-px flex h-8 w-9 items-center justify-center rounded-lg border-black bg-black"
+        @click="toggleSortOrder('descending')"
+      >
         <ArrowDown class="ml-auto mr-auto" />
       </div>
     </div>
@@ -31,14 +39,21 @@ import ArrowDown from './SortArrowDown.vue'
 
 const buttons: string[] = ['Title', 'Description', 'Priority', 'Date']
 const isSortActive = ref(false)
+const activeSort = ref('')
+const sortOrder = ref('')
 
-function toggleActiveSort() {
-  isSortActive.value = !isSortActive.value
+function toggleActiveSort(button: string) {
+  if (activeSort.value !== button && !isSortActive.value) {
+    activeSort.value = button
+    isSortActive.value = !isSortActive.value
+  } else if (activeSort.value !== button) {
+    activeSort.value = button
+  } else {
+    isSortActive.value = !isSortActive.value
+  }
 }
 
-function activeSortClass() {
-  return isSortActive.value
-    ? ['border-green-400', 'bg-green-400', 'text-white']
-    : ['border-black', 'bg-white', 'text-black']
+function toggleSortOrder(order: string) {
+  sortOrder.value = order
 }
 </script>
