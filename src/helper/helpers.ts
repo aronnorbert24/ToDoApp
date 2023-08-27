@@ -9,3 +9,17 @@ export function formatDate(formattingDate: Date, comp: string) {
     return `${day}.${month}.${year}`
   }
 }
+
+const debounce = (fn: Function, duration: number) => {
+  let timer: number
+  return (...args: []) => {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      fn(...args)
+    }, duration)
+  }
+}
+
+export default debounce
