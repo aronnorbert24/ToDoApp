@@ -1,10 +1,7 @@
 <template>
   <transition-group name="todo" tag="ul" class="relative">
-    <li v-for="incompleteTodo in incompleteTodos" :key="incompleteTodo.id">
-      <ToDoItem :todo="incompleteTodo" @editToDo="editToDo" @deleteToDo="deleteToDo" @toggleCheck="toggleCheck" />
-    </li>
-    <li v-for="completeTodo in completeTodos" :key="completeTodo.id">
-      <ToDoItem :todo="completeTodo" @editToDo="editToDo" @deleteToDo="deleteToDo" @toggleCheck="toggleCheck" />
+    <li v-for="todo in todos" :key="todo.id">
+      <ToDoItem :todo="todo" @editToDo="editToDo" @deleteToDo="deleteToDo" @toggleCheck="toggleCheck" />
     </li>
   </transition-group>
 </template>
@@ -14,8 +11,7 @@ import ToDoItem from './ToDoItem.vue'
 import { Todo } from '../todo.ts'
 
 interface Props {
-  incompleteTodos: Todo[]
-  completeTodos: Todo[]
+  todos: Todo[]
 }
 
 defineProps<Props>()
