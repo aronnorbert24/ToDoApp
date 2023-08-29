@@ -188,6 +188,16 @@ function sortByDate(a: Todo, b: Todo) {
   return fb - fa
 }
 
+function sortByPriority(a: Todo, b: Todo) {
+  const priorityOrder = ['Low', 'Medium', 'High']
+  let fa = priorityOrder.indexOf(a.priority),
+    fb = priorityOrder.indexOf(b.priority)
+  if (activeOrder.value === 'ascending') {
+    return fa - fb
+  }
+  return fb - fa
+}
+
 onClickOutside(closeFormRef, toggleForm)
 </script>
 <style scoped></style>
