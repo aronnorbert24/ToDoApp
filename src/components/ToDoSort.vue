@@ -6,7 +6,7 @@
         :key="property"
         class="px-15 border-px ml-4 flex h-8 w-32 items-center justify-center rounded-lg font-header text-sm font-semibold leading-4 transition-transform duration-300 ease-in-out hover:scale-110 hover:border-black hover:bg-black hover:text-white phone:ml-0 phone:mr-auto phone:w-fit phone:px-3"
         :class="getPropertyClass(property)"
-        @click="toggleActiveSort(property, sortOrder)"
+        @click="toggleActiveSort(property)"
       >
         {{ property }}
       </button>
@@ -44,7 +44,6 @@ const sortProperties: string[] = ['Title', 'Description', 'Priority', 'Date']
 const isSortActive = computed(() => !!activeSort.value)
 const activeSort = ref('')
 const sortOrder = ref('ascending')
-const isAscendingActive = ref(true)
 
 function getPropertyClass(property: string) {
   return activeSort.value === property && isSortActive.value
@@ -52,18 +51,14 @@ function getPropertyClass(property: string) {
     : 'border-black bg-white text-black'
 }
 
-function toggleActiveSort(priority: string, order: string) {
+function toggleActiveSort(priority: string) {
   activeSort.value !== priority ? (activeSort.value = priority) : (activeSort.value = '')
-  sortOrder.value = order
   isSortActive.value
     ? emit('sortTodos', activeSort.value, sortOrder.value, isSortActive.value)
     : emit('disactivateSort', isSortActive.value)
 }
 
 function toggleSortOrder(order: string) {
-  if (order !== sortOrder.value) {
-    isAscendingActive.value = !isAscendingActive.value
-  }
   sortOrder.value = order
   if (isSortActive.value && activeSort.value.length) {
     emit('sortTodos', activeSort.value, sortOrder.value, isSortActive.value)
@@ -71,9 +66,6 @@ function toggleSortOrder(order: string) {
 }
 
 function getSortClass(order: string) {
-  if (order === 'ascending') {
-    return isAscendingActive.value ? 'border-green-400 bg-green-400' : 'border-black bg-black'
-  }
-  return isAscendingActive.value ? 'border-black bg-black' : 'border-green-400 bg-green-400'
+  return sortOrder.value === order ? 'border-green-400 bg-green-400' : 'border-black bg-black'
 }
 </script>
