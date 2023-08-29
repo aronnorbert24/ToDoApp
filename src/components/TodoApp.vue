@@ -159,13 +159,33 @@ function sortTodos(property: string, order: string, isActive: boolean) {
 }
 
 function sortByTitle(a: Todo, b: Todo) {
-  let fa = a.title.toLowerCase(),
-    fb = b.title.toLowerCase()
+  let fa = a.title.trim().toLowerCase(),
+    fb = b.title.trim().toLowerCase()
   if (activeOrder.value === 'ascending') {
     return fa < fb ? -1 : fa > fb ? 1 : 0
   }
   console.log('desc')
   return fa < fb ? 1 : fa > fb ? -1 : 0
+}
+
+function sortByDescription(a: Todo, b: Todo) {
+  let fa = a.description.trim().toLowerCase(),
+    fb = b.description.trim().toLowerCase()
+  if (activeOrder.value === 'ascending') {
+    return fa < fb ? -1 : fa > fb ? 1 : 0
+  }
+  return fa < fb ? 1 : fa > fb ? -1 : 0
+}
+
+function sortByDate(a: Todo, b: Todo) {
+  let fa = new Date(a.dueDate)
+  let fb = new Date(b.dueDate)
+  console.log(typeof fa)
+  console.log(typeof fb)
+  if (activeOrder.value === 'ascending') {
+    return fa - fb
+  }
+  return fb - fa
 }
 
 onClickOutside(closeFormRef, toggleForm)
