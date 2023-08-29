@@ -7,14 +7,14 @@
     </p>
     <ToDoSort v-if="filteredTodos.length" @sortTodos="sortTodos" @disactivateSort="disactivateSort" />
     <ToDoForm
-      v-if="isShowingForm"
+      v-if="isFormShown"
       :todo="todo"
       @addToDo="addToDo"
       @deleteToDo="toggleForm"
       @closeForm="toggleForm"
       ref="closeFormRef"
     />
-    <EmptyListImage v-if="isShowingEmptyImage" class="ml-auto mr-auto" />
+    <EmptyListImage v-if="isEmptyImageVisible" class="ml-auto mr-auto" />
     <ToDoList :todos="filteredTodos" @editToDo="editToDo" @deleteToDo="removeToDo" @toggleCheck="toggleCheck" />
   </div>
 </template>
@@ -30,8 +30,8 @@ import ToDoSort from './ToDoSort.vue'
 import EmptyListImage from './EmptyListImage.vue'
 import { Todo } from '../todo.ts'
 
-const isShowingForm: Ref<boolean> = ref(false)
-const isShowingEmptyImage = computed(() => !isShowingForm.value && !todos.value.length)
+const isFormShown: Ref<boolean> = ref(false)
+const isEmptyImageVisible = computed(() => !isFormShown.value && !todos.value.length)
 const closeFormRef = ref(null)
 const searchQuery = ref('')
 const activeOrder = ref('')
@@ -48,11 +48,10 @@ const todo = ref<Todo>({
 })
 
 const filteredTodos = computed(() => {
-  const allTodos = [...todos.value]
   if (!searchQuery.value) {
-    return allTodos
+    return todos.value
   }
-  return allTodos.filter((todo) => {
+  return todos.value.filter((todo) => {
     const searchSmall = searchQuery.value.toLowerCase()
     const titleSmall = todo.title.toLowerCase()
     const descSmall = todo.description.toLowerCase()
@@ -69,21 +68,23 @@ function getFromLocalStorage() {
   return savedTodos ? JSON.parse(savedTodos) : []
 }
 
-function toggleCheck(checked: boolean, id: number) {
+function toggleCheck(isChecked: boolean, id: number) {
   const updatedTodo = todos.value.find((todo) => todo.id === id)
   if (updatedTodo) {
-    updatedTodo.isChecked = checked
+    updatedTodo.isChecked = isChecked
   }
-  !isSortActive.value ? animate(id, checked) : ''
+  if (!isSortActive.value) {
+    animate(id, isChecked)
+  }
 }
 
-function animate(id: number, checked: boolean) {
+function animate(id: number, isChecked: boolean) {
   const index = todos.value.findIndex((todo) => todo.id === id)
   const copyToDo = todos.value.splice(index, 1)
   if (!copyToDo[0]) {
     return
   }
-  checked ? todos.value.push(copyToDo[0]) : todos.value.unshift(copyToDo[0])
+  isChecked ? todos.value.push(copyToDo[0]) : todos.value.unshift(copyToDo[0])
   saveToLocalStorage()
 }
 
@@ -98,7 +99,9 @@ function addToDo(todo: Todo) {
   }
   todos.value.unshift(newTodo)
   saveToLocalStorage()
-  isSortActive.value ? sortTodos(activeProperty.value, activeOrder.value, isSortActive.value) : ''
+  if (isSortActive.value) {
+    sortTodos(activeProperty.value, activeOrder.value, isSortActive.value)
+  }
   toggleForm()
 }
 
@@ -119,15 +122,17 @@ function editToDo(todo: Todo) {
   const index: number = todos.value.findIndex((todo) => todo.id === newTodo.id)
   todos.value[index] = newTodo
   saveToLocalStorage()
-  isSortActive.value ? sortTodos(activeProperty.value, activeOrder.value, isSortActive.value) : ''
+  if (isSortActive.value) {
+    sortTodos(activeProperty.value, activeOrder.value, isSortActive.value)
+  }
 }
 
 function toggleForm() {
-  isShowingForm.value = !isShowingForm.value
+  isFormShown.value = !isFormShown.value
 }
 
 function closeForm() {
-  isShowingForm.value = false
+  isFormShown.value = false
 }
 
 function searchToDos(item: string) {
@@ -159,43 +164,34 @@ function sortTodos(property: string, order: string, isActive: boolean) {
 }
 
 function sortByTitle(a: Todo, b: Todo) {
-  let fa = a.title.trim().toLowerCase(),
-    fb = b.title.trim().toLowerCase()
+  const previous = a.title.trim().toLowerCase()
+  const next = b.title.trim().toLowerCase()
   if (activeOrder.value === 'ascending') {
-    return fa < fb ? -1 : fa > fb ? 1 : 0
+    return previous < next ? -1 : previous > next ? 1 : 0
   }
-  console.log('desc')
-  return fa < fb ? 1 : fa > fb ? -1 : 0
+  return previous < next ? 1 : previous > next ? -1 : 0
 }
 
 function sortByDescription(a: Todo, b: Todo) {
-  let fa = a.description.trim().toLowerCase(),
-    fb = b.description.trim().toLowerCase()
+  const previous = a.description.trim().toLowerCase()
+  const next = b.description.trim().toLowerCase()
   if (activeOrder.value === 'ascending') {
-    return fa < fb ? -1 : fa > fb ? 1 : 0
+    return previous < next ? -1 : previous > next ? 1 : 0
   }
-  return fa < fb ? 1 : fa > fb ? -1 : 0
+  return previous < next ? 1 : previous > next ? -1 : 0
 }
 
 function sortByDate(a: Todo, b: Todo) {
-  let fa = new Date(a.dueDate)
-  let fb = new Date(b.dueDate)
-  console.log(typeof fa)
-  console.log(typeof fb)
-  if (activeOrder.value === 'ascending') {
-    return fa - fb
-  }
-  return fb - fa
+  const previous = new Date(a.dueDate)
+  const next = new Date(b.dueDate)
+  return activeOrder.value === 'ascending' ? previous - next : next - previous
 }
 
 function sortByPriority(a: Todo, b: Todo) {
   const priorityOrder = ['Low', 'Medium', 'High']
-  let fa = priorityOrder.indexOf(a.priority),
-    fb = priorityOrder.indexOf(b.priority)
-  if (activeOrder.value === 'ascending') {
-    return fa - fb
-  }
-  return fb - fa
+  const previous = priorityOrder.indexOf(a.priority)
+  const next = priorityOrder.indexOf(b.priority)
+  return activeOrder.value === 'ascending' ? previous - next : next - previous
 }
 
 onClickOutside(closeFormRef, toggleForm)

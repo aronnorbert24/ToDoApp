@@ -2,17 +2,13 @@
   <div class="mt-6 h-8 w-full computer:flex computer:items-center computer:justify-between">
     <div class="flex h-8 w-7/12 items-center justify-center phone:w-full computer:ml-5">
       <button
-        v-for="button in buttons"
-        :key="button"
+        v-for="property in sortProperties"
+        :key="property"
         class="px-15 border-px ml-4 flex h-8 w-32 items-center justify-center rounded-lg font-header text-sm font-semibold leading-4 transition-transform duration-300 ease-in-out hover:scale-110 hover:border-black hover:bg-black hover:text-white phone:ml-0 phone:mr-auto phone:w-fit phone:px-3"
-        :class="[
-          activeSort === button && isSortActive === true
-            ? ['border-green-400', 'bg-green-400', 'text-white']
-            : ['border-black', 'bg-white', 'text-black'],
-        ]"
-        @click="toggleActiveSort(button, sortOrder)"
+        :class="getPropertyClass(property)"
+        @click="toggleActiveSort(property, sortOrder)"
       >
-        {{ button }}
+        {{ property }}
       </button>
     </div>
     <div class="flex h-8 w-5/12 items-center phone:mb-6 phone:mt-6 computer:ml-auto">
@@ -35,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import ArrowUp from './SortArrowUp.vue'
 import ArrowDown from './SortArrowDown.vue'
 
@@ -44,21 +40,20 @@ const emit = defineEmits<{
   (e: 'disactivateSort', isActive: boolean): void
 }>()
 
-const buttons: string[] = ['Title', 'Description', 'Priority', 'Date']
-const isSortActive = ref(false)
+const sortProperties: string[] = ['Title', 'Description', 'Priority', 'Date']
+const isSortActive = computed(() => !!activeSort.value)
 const activeSort = ref('')
 const sortOrder = ref('ascending')
 const isAscendingActive = ref(true)
 
+function getPropertyClass(property: string) {
+  return activeSort.value === property && isSortActive.value
+    ? 'border-green-400 bg-green-400 text-white'
+    : 'border-black bg-white text-black'
+}
+
 function toggleActiveSort(priority: string, order: string) {
-  if (activeSort.value !== priority && !isSortActive.value) {
-    activeSort.value = priority
-    isSortActive.value = !isSortActive.value
-  } else if (activeSort.value !== priority) {
-    activeSort.value = priority
-  } else {
-    isSortActive.value = !isSortActive.value
-  }
+  activeSort.value !== priority ? (activeSort.value = priority) : (activeSort.value = '')
   sortOrder.value = order
   isSortActive.value
     ? emit('sortTodos', activeSort.value, sortOrder.value, isSortActive.value)
@@ -66,17 +61,19 @@ function toggleActiveSort(priority: string, order: string) {
 }
 
 function toggleSortOrder(order: string) {
-  order !== sortOrder.value ? (isAscendingActive.value = !isAscendingActive.value) : ''
+  if (order !== sortOrder.value) {
+    isAscendingActive.value = !isAscendingActive.value
+  }
   sortOrder.value = order
-  isSortActive.value && activeSort.value.length
-    ? emit('sortTodos', activeSort.value, sortOrder.value, isSortActive.value)
-    : ''
+  if (isSortActive.value && activeSort.value.length) {
+    emit('sortTodos', activeSort.value, sortOrder.value, isSortActive.value)
+  }
 }
 
 function getSortClass(order: string) {
   if (order === 'ascending') {
-    return isAscendingActive.value ? ['border-green-400', 'bg-green-400'] : ['border-black', 'bg-black']
+    return isAscendingActive.value ? 'border-green-400 bg-green-400' : 'border-black bg-black'
   }
-  return isAscendingActive.value ? ['border-black', 'bg-black'] : ['border-green-400', 'bg-green-400']
+  return isAscendingActive.value ? 'border-black bg-black' : 'border-green-400 bg-green-400'
 }
 </script>

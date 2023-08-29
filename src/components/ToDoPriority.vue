@@ -58,7 +58,7 @@ const emit = defineEmits<{
 const isDropdownShowing = ref(false)
 const hideDropdownRef = ref(null)
 const classObject = computed(() =>
-  isDropdownShowing.value ? ['text-black', 'bg-white', 'border-2', 'border-black'] : ['text-white', 'border-0']
+  isDropdownShowing.value ? 'text-black bg-white border-2 border-black' : 'text-white border-0'
 )
 
 const popupClass = computed(() => (isDropdownShowing.value ? 'relative' : 'static'))
