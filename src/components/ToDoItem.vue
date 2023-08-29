@@ -68,8 +68,8 @@ interface Props {
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  (e: 'editToDo', todo: Todo, which: string): void
-  (e: 'deleteToDo', id: number, which: string): void
+  (e: 'editToDo', todo: Todo): void
+  (e: 'deleteToDo', id: number): void
   (e: 'toggleCheck', checked: boolean, id: number): void
 }>()
 
@@ -104,12 +104,12 @@ function checkToDo(checked: boolean) {
 
 function editToDo(todo: Todo) {
   toggleEditState()
-  emit('editToDo', todo, props.todo.isChecked ? 'complete' : 'incomplete')
+  emit('editToDo', todo)
 }
 
 function deleteToDo(id: number) {
   toggleEditState()
-  emit('deleteToDo', id, props.todo.isChecked ? 'complete' : 'incomplete')
+  emit('deleteToDo', id)
 }
 
 onClickOutside(closeFormRef, toggleEditState)

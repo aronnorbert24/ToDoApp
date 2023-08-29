@@ -5,7 +5,7 @@
     <p v-if="!filteredTodos.length && searchQuery.length" class="mt-6 font-header text-xl font-semibold text-black">
       There are no todos with that title/description
     </p>
-    <ToDoSort v-if="filteredTodos.length" />
+    <ToDoSort v-if="filteredTodos.length" @sortTodos="sortTodos" @disactivateSort="disactivateSort" />
     <ToDoForm
       v-if="isShowingForm"
       :todo="todo"
@@ -30,14 +30,14 @@ import ToDoSort from './ToDoSort.vue'
 import EmptyListImage from './EmptyListImage.vue'
 import { Todo } from '../todo.ts'
 
-const incompleteTodos = ref<Todo[]>(getIncompletedFromLocalStorage())
-const completeTodos = ref<Todo[]>(getCompletedFromLocalStorage())
 const isShowingForm: Ref<boolean> = ref(false)
-const isShowingEmptyImage = computed(
-  () => !isShowingForm.value && !incompleteTodos.value.length && !completeTodos.value.length
-)
+const isShowingEmptyImage = computed(() => !isShowingForm.value && !todos.value.length)
 const closeFormRef = ref(null)
 const searchQuery = ref('')
+const activeOrder = ref('')
+const activeProperty = ref('')
+const isSortActive = ref(false)
+const todos = ref<Todo[]>(getFromLocalStorage())
 const todo = ref<Todo>({
   title: 'Title',
   description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
@@ -48,7 +48,7 @@ const todo = ref<Todo>({
 })
 
 const filteredTodos = computed(() => {
-  const allTodos = [...incompleteTodos.value, ...completeTodos.value]
+  const allTodos = [...todos.value]
   if (!searchQuery.value) {
     return allTodos
   }
@@ -61,54 +61,29 @@ const filteredTodos = computed(() => {
 })
 
 function saveToLocalStorage() {
-  localStorage.setItem('incompleteTodos', JSON.stringify(incompleteTodos.value))
-  localStorage.setItem('completeTodos', JSON.stringify(completeTodos.value))
+  localStorage.setItem('todos', JSON.stringify(todos.value))
 }
 
-function getIncompletedFromLocalStorage() {
-  const savedIncompleteTodos = localStorage.getItem('incompleteTodos')
-  return savedIncompleteTodos ? JSON.parse(savedIncompleteTodos) : []
-}
-
-function getCompletedFromLocalStorage() {
-  const savedCompleteTodos = localStorage.getItem('completeTodos')
-  return savedCompleteTodos ? JSON.parse(savedCompleteTodos) : []
+function getFromLocalStorage() {
+  const savedTodos = localStorage.getItem('todos')
+  return savedTodos ? JSON.parse(savedTodos) : []
 }
 
 function toggleCheck(checked: boolean, id: number) {
-  if (checked) {
-    const updatedTodo = incompleteTodos.value.find((todo) => todo.id === id)
-    if (updatedTodo) {
-      updatedTodo.isChecked = checked
-    }
-    animateDown(id)
-  } else {
-    const updatedTodo = completeTodos.value.find((todo) => todo.id === id)
-    if (updatedTodo) {
-      updatedTodo.isChecked = checked
-    }
-    animateUp(id)
+  const updatedTodo = todos.value.find((todo) => todo.id === id)
+  if (updatedTodo) {
+    updatedTodo.isChecked = checked
   }
+  !isSortActive.value ? animate(id, checked) : ''
 }
 
-function animateDown(id: number) {
-  const index = incompleteTodos.value.findIndex((todo) => todo.id === id)
-  const copyToDo = incompleteTodos.value.splice(index, 1)
+function animate(id: number, checked: boolean) {
+  const index = todos.value.findIndex((todo) => todo.id === id)
+  const copyToDo = todos.value.splice(index, 1)
   if (!copyToDo[0]) {
     return
   }
-
-  completeTodos.value.push(copyToDo[0])
-  saveToLocalStorage()
-}
-
-function animateUp(id: number) {
-  const index = completeTodos.value.findIndex((todo) => todo.id === id)
-  const copyToDo = completeTodos.value.splice(index, 1)
-  if (!copyToDo[0]) {
-    return
-  }
-  incompleteTodos.value.unshift(copyToDo[0])
+  checked ? todos.value.push(copyToDo[0]) : todos.value.unshift(copyToDo[0])
   saveToLocalStorage()
 }
 
@@ -121,21 +96,18 @@ function addToDo(todo: Todo) {
     dueDate: todo.dueDate,
     id: new Date().getTime(),
   }
-  incompleteTodos.value.unshift(newTodo)
+  todos.value.unshift(newTodo)
   saveToLocalStorage()
+  isSortActive.value ? sortTodos(activeProperty.value, activeOrder.value, isSortActive.value) : ''
   toggleForm()
 }
 
-function removeToDo(id: number, which: string) {
-  if (which === 'complete') {
-    completeTodos.value = completeTodos.value.filter((todo) => todo.id !== id)
-  } else {
-    incompleteTodos.value = incompleteTodos.value.filter((todo) => todo.id !== id)
-  }
+function removeToDo(id: number) {
+  todos.value = todos.value.filter((todo) => todo.id !== id)
   saveToLocalStorage()
 }
 
-function editToDo(todo: Todo, which: string) {
+function editToDo(todo: Todo) {
   const newTodo = {
     title: todo.title,
     description: todo.description,
@@ -144,15 +116,10 @@ function editToDo(todo: Todo, which: string) {
     dueDate: todo.dueDate,
     id: todo.id,
   }
-  if (which === 'complete') {
-    const index: number = completeTodos.value.findIndex((todo) => todo.id === newTodo.id)
-    completeTodos.value[index] = newTodo
-  } else {
-    const index: number = incompleteTodos.value.findIndex((todo) => todo.id === newTodo.id)
-    incompleteTodos.value[index] = newTodo
-  }
-
+  const index: number = todos.value.findIndex((todo) => todo.id === newTodo.id)
+  todos.value[index] = newTodo
   saveToLocalStorage()
+  isSortActive.value ? sortTodos(activeProperty.value, activeOrder.value, isSortActive.value) : ''
 }
 
 function toggleForm() {
@@ -165,6 +132,40 @@ function closeForm() {
 
 function searchToDos(item: string) {
   searchQuery.value = item
+}
+
+function disactivateSort(isActive: boolean) {
+  isSortActive.value = isActive
+}
+
+function sortTodos(property: string, order: string, isActive: boolean) {
+  activeOrder.value = order
+  activeProperty.value = property
+  isSortActive.value = isActive
+  todos.value.sort((a: Todo, b: Todo) => {
+    switch (property) {
+      case 'Title':
+        return sortByTitle(a, b)
+      case 'Description':
+        return sortByDescription(a, b)
+      case 'Priority':
+        return sortByPriority(a, b)
+      case 'Date':
+        return sortByDate(a, b)
+      default:
+        return 0
+    }
+  })
+}
+
+function sortByTitle(a: Todo, b: Todo) {
+  let fa = a.title.toLowerCase(),
+    fb = b.title.toLowerCase()
+  if (activeOrder.value === 'ascending') {
+    return fa < fb ? -1 : fa > fb ? 1 : 0
+  }
+  console.log('desc')
+  return fa < fb ? 1 : fa > fb ? -1 : 0
 }
 
 onClickOutside(closeFormRef, toggleForm)
