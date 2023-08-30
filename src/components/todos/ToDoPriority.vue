@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { onClickOutside } from '@vueuse/core'
-import ArrowDown from './PriorityArrowDown.vue'
+import ArrowDown from '../icons/PriorityArrowDown.vue'
 
 interface Props {
   priority: string

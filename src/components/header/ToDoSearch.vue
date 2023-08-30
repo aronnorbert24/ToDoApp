@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import SearchIcon from './SearchIcon.vue'
-import { debounce } from '../helper/helpers.ts'
+import { debounce } from '../../helper/helpers.ts'
 
 const emit = defineEmits<{
   (e: 'searchToDos', searchQuery: string): void

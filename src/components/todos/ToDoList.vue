@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import ToDoItem from './ToDoItem.vue'
-import { Todo } from '../todo.ts'
+import { Todo } from '../../types/todo.ts'
 
 interface Props {
   todos: Todo[]
