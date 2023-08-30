@@ -1,5 +1,5 @@
 <template>
-  <transition-group name="todo" tag="ul" class="relative">
+  <transition-group name="todo" tag="ul" class="relative phone:top-16">
     <li v-for="todo in todos" :key="todo.id">
       <ToDoItem :todo="todo" @editToDo="editToDo" @deleteToDo="deleteToDo" @toggleCheck="toggleCheck" />
     </li>
@@ -17,21 +17,21 @@ interface Props {
 defineProps<Props>()
 
 const emit = defineEmits<{
-  (e: 'editToDo', todo: Todo, which: string): void
-  (e: 'deleteToDo', id: number, which: string): void
-  (e: 'toggleCheck', checked: boolean, id: number): void
+  (e: 'editToDo', todo: Todo): void
+  (e: 'deleteToDo', id: number): void
+  (e: 'toggleCheck', isChecked: boolean, id: number): void
 }>()
 
-function toggleCheck(checked: boolean, id: number) {
-  emit('toggleCheck', checked, id)
+function toggleCheck(isChecked: boolean, id: number) {
+  emit('toggleCheck', isChecked, id)
 }
 
-function editToDo(todo: Todo, which: string) {
-  emit('editToDo', todo, which)
+function editToDo(todo: Todo) {
+  emit('editToDo', todo)
 }
 
-function deleteToDo(id: number, which: string) {
-  emit('deleteToDo', id, which)
+function deleteToDo(id: number) {
+  emit('deleteToDo', id)
 }
 </script>
 

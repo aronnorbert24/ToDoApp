@@ -42,7 +42,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { onClickOutside } from '@vueuse/core'
-import ArrowDown from './ArrowDown.vue'
+import ArrowDown from './PriorityArrowDown.vue'
 
 interface Props {
   priority: string
@@ -58,7 +58,7 @@ const emit = defineEmits<{
 const isDropdownShowing = ref(false)
 const hideDropdownRef = ref(null)
 const classObject = computed(() =>
-  isDropdownShowing.value ? ['text-black', 'bg-white', 'border-2', 'border-black'] : ['text-white', 'border-0']
+  isDropdownShowing.value ? 'text-black bg-white border-2 border-black' : 'text-white border-0'
 )
 
 const popupClass = computed(() => (isDropdownShowing.value ? 'relative' : 'static'))
