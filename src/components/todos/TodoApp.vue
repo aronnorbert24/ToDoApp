@@ -1,22 +1,20 @@
 <template>
-  <div @click.self="closeForm" class="h-full">
-    <ToDoHeader @showForm="toggleForm" />
-    <ToDoSearch v-if="filteredTodos.length || searchQuery.length" @searchToDos="searchToDos" />
-    <p v-if="!filteredTodos.length && searchQuery.length" class="mt-6 font-header text-xl font-semibold text-black">
-      There are no todos with that title/description
-    </p>
-    <ToDoSort v-if="filteredTodos.length" @sortTodos="sortTodos" @disactivateSort="disactivateSort" />
-    <ToDoForm
-      v-if="isFormShown"
-      :todo="todo"
-      @addToDo="addToDo"
-      @deleteToDo="toggleForm"
-      @closeForm="toggleForm"
-      ref="closeFormRef"
-    />
-    <EmptyListImage v-if="isEmptyImageVisible" class="ml-auto mr-auto" />
-    <ToDoList :todos="filteredTodos" @editToDo="editToDo" @deleteToDo="removeToDo" @toggleCheck="toggleCheck" />
-  </div>
+  <ToDoHeader @showForm="toggleForm" />
+  <ToDoSearch v-if="filteredTodos.length || searchQuery.length" @searchToDos="searchToDos" />
+  <p v-if="!filteredTodos.length && searchQuery.length" class="mt-6 font-header text-xl font-semibold text-black">
+    There are no todos with that title/description
+  </p>
+  <ToDoSort v-if="filteredTodos.length" @sortTodos="sortTodos" @disactivateSort="disactivateSort" />
+  <ToDoForm
+    v-if="isFormShown"
+    :todo="todo"
+    @addToDo="addToDo"
+    @deleteToDo="toggleForm"
+    @closeForm="toggleForm"
+    ref="closeFormRef"
+  />
+  <EmptyListImage v-if="isEmptyImageVisible" class="ml-auto mr-auto" />
+  <ToDoList :todos="filteredTodos" @editToDo="editToDo" @deleteToDo="removeToDo" @toggleCheck="toggleCheck" />
 </template>
 
 <script setup lang="ts">
@@ -24,11 +22,11 @@ import { ref, Ref, computed } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import ToDoForm from './ToDoForm.vue'
 import ToDoList from './ToDoList.vue'
-import ToDoHeader from './ToDoHeader.vue'
-import ToDoSearch from './ToDoSearch.vue'
-import ToDoSort from './ToDoSort.vue'
-import EmptyListImage from './EmptyListImage.vue'
-import { Todo } from '../todo.ts'
+import ToDoHeader from '../header/ToDoHeader.vue'
+import ToDoSearch from '../header/ToDoSearch.vue'
+import ToDoSort from '../header/ToDoSort.vue'
+import EmptyListImage from '../icons/EmptyListImage.vue'
+import { Todo } from '../../types/todo.ts'
 
 const isFormShown: Ref<boolean> = ref(false)
 const isEmptyImageVisible = computed(() => !isFormShown.value && !todos.value.length)

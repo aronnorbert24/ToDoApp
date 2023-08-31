@@ -1,17 +1,17 @@
 <template>
   <div class="mt-6 h-8 w-full computer:flex computer:items-center computer:justify-between">
-    <div class="flex h-8 w-7/12 items-center justify-center phone:w-full computer:ml-5">
+    <div class="flex h-8 w-8/12 items-center phone:w-full">
       <button
         v-for="property in sortProperties"
         :key="property"
-        class="px-15 border-px ml-4 flex h-8 w-32 items-center justify-center rounded-lg font-header text-sm font-semibold leading-4 transition-transform duration-300 ease-in-out hover:scale-110 hover:border-black hover:bg-black hover:text-white phone:ml-0 phone:mr-auto phone:w-fit phone:px-3"
+        class="border-px ml-0 mr-auto flex h-8 w-fit items-center justify-center rounded-lg font-header text-sm font-semibold leading-4 transition-transform duration-300 ease-in-out hover:scale-110 hover:border-black hover:bg-black hover:text-white phone:px-3"
         :class="getPropertyClass(property)"
         @click="toggleActiveSort(property)"
       >
         {{ property }}
       </button>
     </div>
-    <div class="flex h-8 w-5/12 items-center phone:mb-6 phone:mt-6 computer:ml-auto">
+    <div class="flex h-8 w-4/12 items-center phone:mb-6 phone:mt-6 computer:ml-auto">
       <div
         class="border-px flex h-8 w-9 items-center justify-center rounded-lg transition-transform duration-300 ease-in-out hover:scale-110 hover:cursor-pointer computer:ml-auto computer:mr-3"
         :class="getSortClass('ascending')"

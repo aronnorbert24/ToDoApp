@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import CheckedIcon from './CheckedIcon.vue'
+import CheckedIcon from '../icons/CheckedIcon.vue'
 
 interface Props {
   isChecked: boolean

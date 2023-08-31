@@ -28,11 +28,11 @@
     </div>
     <textarea
       type="text"
-      class="ml-6 mt-6 flex h-24 w-10/12 text-left indent-1 font-header text-2xl font-semibold text-black phone:ml-4 phone:h-20 phone:w-56 phone:text-sm phone:font-normal phone:leading-4 phone:text-neutral-500"
+      class="ml-6 mt-6 flex h-24 w-10/12 text-left indent-1 font-header text-2xl font-semibold text-black outline-none outline-black phone:ml-4 phone:h-20 phone:w-56 phone:text-sm phone:font-normal phone:leading-4 phone:text-neutral-500"
       :placeholder="updatedToDo.description"
       v-model="updatedToDo.description"
     ></textarea>
-    <div class="flex items-center justify-start">
+    <div class="mt-4 flex items-center justify-start">
       <button
         @click.prevent="saveTodo"
         class="mb-4 ml-6 h-12 w-28 rounded-2xl bg-green-400 font-header text-lg font-semibold leading-6 text-white phone:ml-4 phone:h-8 phone:w-16 phone:rounded-lg phone:px-3 phone:py-1.5 phone:text-sm phone:leading-4"
@@ -60,8 +60,8 @@ import { ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import ToDoPriority from './ToDoPriority.vue'
 import DeletePopup from './DeletePopup.vue'
-import { Todo } from '../todo.ts'
-import { formatDate } from '../helper/helpers.ts'
+import { Todo } from '../../types/todo'
+import { formatDate } from '../../helper/helpers'
 
 interface Props {
   todo: Todo

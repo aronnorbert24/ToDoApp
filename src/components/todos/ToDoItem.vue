@@ -5,7 +5,7 @@
     :class="getEditFormClass"
   >
     <div class="flex h-fit w-full items-center justify-between">
-      <div class="items-center justify-between phone:flex phone:flex-col">
+      <div class="items-center justify-between phone:flex phone:h-fit phone:flex-col computer:w-9/12">
         <p
           class="ml-6 mt-4 flex h-12 w-9/12 items-center justify-between font-title text-4xl font-semibold leading-10 text-black phone:ml-3 phone:mt-2 phone:inline phone:h-3 phone:text-left phone:text-2xl phone:font-medium phone:leading-5"
         >
@@ -57,9 +57,9 @@ import { ref, computed } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import ToDoForm from './ToDoForm.vue'
 import ToDoChecked from './ToDoChecked.vue'
-import DateIcon from './DateIcon.vue'
-import { Todo } from '../todo.ts'
-import { formatDate } from '../helper/helpers'
+import DateIcon from '../icons/DateIcon.vue'
+import { Todo } from '../../types/todo.ts'
+import { formatDate } from '../../helper/helpers'
 
 interface Props {
   todo: Todo
