@@ -11,18 +11,23 @@ app.use(express.json())
 
 dotenv.config()
 
-const connectionString: string = process.env.CONNECTION_STRING!
+const username: string = process.env.MONGO_USER!
+const password: string = process.env.MONGO_PASSWORD!
+const database: string = process.env.DB_NAME!
+const connectionString: string = `mongodb+srv://${username}:${password}@wgclusterlearn.gr0pdlo.mongodb.net`
 
 async function start() {
   await mongoose
     .connect(connectionString, {
-      dbName: 'todo_Simon_Aron',
+      retryWrites: true,
+      w: 'majority',
+      dbName: database,
     })
     .then(() => {
       console.log('Connected to MongoDB database ' + mongoose.connection.name)
     })
-    .catch((e: string) => {
-      console.log(e)
+    .catch((error: any) => {
+      console.error('Failed to connect to MongoDB database', error)
     })
   const port: string = process.env.PORT!
   app.listen(port, () => console.log(port))
