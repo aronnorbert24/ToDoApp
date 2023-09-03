@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+export interface Todo {
+	title: string;
+	description: string;
+	priority: string;
+	isChecked: boolean;
+	dueDate: Date;
+	userId: mongoose.Schema.Types.ObjectId;
+}
+
 const todoSchema = new mongoose.Schema({
 	title: {
 		type: String,
@@ -30,4 +39,4 @@ const todoSchema = new mongoose.Schema({
 	},
 });
 
-module.exports = mongoose.model("Todo", todoSchema);
+module.exports = mongoose.model("todo", todoSchema);
