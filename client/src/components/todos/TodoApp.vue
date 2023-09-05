@@ -26,7 +26,7 @@ import ToDoHeader from '../header/ToDoHeader.vue'
 import ToDoSearch from '../header/ToDoSearch.vue'
 import ToDoSort from '../header/ToDoSort.vue'
 import EmptyListImage from '../icons/EmptyListImage.vue'
-import { Todo } from '../../types/todo.ts'
+import { Todo } from '../../types/todo'
 
 const isFormShown: Ref<boolean> = ref(false)
 const isEmptyImageVisible = computed(() => !isFormShown.value && !todos.value.length)
@@ -127,10 +127,6 @@ function editToDo(todo: Todo) {
 
 function toggleForm() {
   isFormShown.value = !isFormShown.value
-}
-
-function closeForm() {
-  isFormShown.value = false
 }
 
 function searchToDos(item: string) {
