@@ -5,6 +5,7 @@
     <div class="flex items-center justify-between">
       <input
         type="text"
+        maxlength="22"
         class="ml-6 mt-4 flex h-12 w-8/12 items-center justify-center indent-0.5 font-title text-4xl font-semibold leading-10 text-black phone:ml-4 phone:h-6 phone:w-48 phone:text-lg"
         :placeholder="updatedToDo.title"
         v-model="updatedToDo.title"
@@ -28,6 +29,7 @@
     </div>
     <textarea
       type="text"
+      maxlength="100"
       class="ml-6 mt-6 flex h-24 w-10/12 text-left indent-1 font-header text-2xl font-semibold text-black outline-none outline-black phone:ml-4 phone:h-20 phone:w-56 phone:text-sm phone:font-normal phone:leading-4 phone:text-neutral-500"
       :placeholder="updatedToDo.description"
       v-model="updatedToDo.description"
@@ -72,6 +74,7 @@ const props = defineProps<Props>()
 const emit = defineEmits(['addToDo', 'deleteToDo', 'editToDo'])
 
 const updatedToDo = ref<Todo>({
+  _id: '',
   title: props.todo.title,
   description: props.todo.description,
   priority: props.todo.priority,
