@@ -1,15 +1,13 @@
-import { config } from 'dotenv'
+import dotenv from 'dotenv'
 
-config({
-  path: '../.env',
-})
+dotenv.config()
 
-const asd = (abc: string) => {
-  throw new Error(abc)
+const errorMessage = (error: string) => {
+  throw new Error(error)
 }
 
-export default {
-  database: process.env.DB_NAME || asd('database name is missing'),
-  connectionString: process.env.CONNECTION_STRING || asd('connection string is missing'),
-  port: process.env.PORT || asd('port number is missing'),
+module.exports = {
+  database: process.env.DB_NAME || errorMessage('database name is missing'),
+  connectionString: process.env.CONNECTION_STRING || errorMessage('connection string is missing'),
+  port: process.env.PORT || errorMessage('port number is missing'),
 }

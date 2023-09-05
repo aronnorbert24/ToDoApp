@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import config from './dotenv.config'
+const { database, connectionString, port } = require('./dotenv.config')
 
 const app = express()
 
@@ -9,9 +9,6 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 dotenv.config()
-
-const database: string = config.database
-const connectionString: string = config.connectionString
 
 mongoose
   .connect(connectionString, {
@@ -25,7 +22,6 @@ mongoose
   .catch((error: any) => {
     console.error('Failed to connect to MongoDB database', error)
   })
-const port: string = config.port
 
 app.get('/', function (req: Request, res: Response) {
   res.send('Hey Bro!')
