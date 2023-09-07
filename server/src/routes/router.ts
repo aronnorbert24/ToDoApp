@@ -1,9 +1,10 @@
-import { Router } from "express";
-import userController from "../controllers/userController";
+import { Router } from 'express'
+import userController from '../controllers/userController'
+import { Schemas, ValidateSchema } from '../middleware/ValidateSchema'
 
-const router = Router();
+const router = Router()
 
-router.post("/login", userController.login);
-router.post("/register-user", userController.register);
+router.post('/login', ValidateSchema(Schemas.user.login), userController.login)
+router.post('/register-user', ValidateSchema(Schemas.user.register), userController.register)
 
-module.exports = router;
+export default router
