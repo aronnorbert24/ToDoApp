@@ -6,8 +6,9 @@
     <div class="m-auto mt-10 h-1/3 justify-center rounded-3xl bg-yellow-50 phone:w-8/12 computer:w-4/12">
       <p class="ml-auto mr-auto w-full pt-4 text-3xl font-semibold">Login</p>
 
-      <UserInput :label="'Email:'" :property="'email'" v-model="email" />
-      <UserInput :label="'Password:'" :property="'password'" v-model="password" />
+      <UserInput v-model="email" label="Email:" property="email" />
+      <UserInput v-model="password" label="Password:" property="password" />
+      <ErrorButton :error="errorMessage" />
       <button
         class="mt-10 h-10 w-10/12 rounded-3xl border-none bg-gradient-to-br from-cyan-400 to-green-500 font-semibold text-white transition-transform duration-500 ease-in-out hover:scale-110"
         @click="login"
@@ -22,10 +23,13 @@
 </template>
 
 <script setup lang="ts">
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { loginUser } from '../services/authentication'
 import UserInput from '../components/baseComponents/UserInput.vue'
+import ErrorButton from '../components/baseComponents/ErrorButton.vue'
 
 const email = ref('')
 const password = ref('')
@@ -35,12 +39,35 @@ const errorMessage = ref('')
 const router = useRouter()
 
 async function login() {
+  if (!isInputValid()) {
+    return
+  }
+
   try {
     await loginUser(email.value, password.value)
     router.push({ name: 'Dashboard' })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Register Error', error)
-    errorMessage.value = 'Registration failed. Please check your input and try again.'
+    errorMessage.value = error.response.data
   }
+}
+
+function isInputValid() {
+  if (email.value.trim() === '' || password.value.trim() === '') {
+    errorMessage.value = 'Please fill in every field.'
+    return false
+  }
+
+  if (!/^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(email.value)) {
+    errorMessage.value = 'Please enter a valid email address'
+    return false
+  }
+
+  if (password.value.length < 8) {
+    errorMessage.value = 'Password must be at least 8 characters long.'
+    return false
+  }
+
+  return true
 }
 </script>

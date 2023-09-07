@@ -74,13 +74,12 @@ const props = defineProps<Props>()
 const emit = defineEmits(['addToDo', 'deleteToDo', 'editToDo'])
 
 const updatedToDo = ref<Todo>({
-  _id: '',
+  _id: props.todo._id,
   title: props.todo.title,
   description: props.todo.description,
   priority: props.todo.priority,
   isChecked: props.todo.isChecked,
   dueDate: props.todo.dueDate,
-  id: props.todo.id,
 })
 
 const isDropdownShowing = ref(false)
@@ -106,7 +105,7 @@ function saveTodo() {
     return
   }
   updatedToDo.value.dueDate = new Date(toDoDate.value)
-  if (updatedToDo.value.id === -1) {
+  if (updatedToDo.value._id === -1) {
     emit('addToDo', updatedToDo.value)
     return
   }
@@ -114,7 +113,7 @@ function saveTodo() {
 }
 
 function deleteToDo() {
-  emit('deleteToDo', props.todo.id)
+  emit('deleteToDo', props.todo._id)
 }
 
 onClickOutside(hideDeletePopupRef, toggleDeletePopup)

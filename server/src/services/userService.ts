@@ -15,8 +15,6 @@ class UserService {
 
     const savedUser = await newUser.save()
 
-    console.log(savedUser)
-
     return savedUser
   }
 }

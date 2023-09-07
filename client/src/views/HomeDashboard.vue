@@ -39,13 +39,12 @@ const activeProperty = ref('')
 const isSortActive = ref(false)
 const todos = ref<Todo[]>(getFromLocalStorage())
 const todo = ref<Todo>({
-  _id: '',
+  _id: -1,
   title: 'Title',
   description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
   priority: 'Medium',
   isChecked: false,
   dueDate: new Date(),
-  id: -1,
 })
 
 const filteredTodos = computed(() => {
@@ -70,7 +69,7 @@ function getFromLocalStorage() {
 }
 
 function toggleCheck(isChecked: boolean, id: number) {
-  const updatedTodo = todos.value.find((todo) => todo.id === id)
+  const updatedTodo = todos.value.find((todo) => todo._id === id)
   if (updatedTodo) {
     updatedTodo.isChecked = isChecked
   }
@@ -80,7 +79,7 @@ function toggleCheck(isChecked: boolean, id: number) {
 }
 
 function animate(id: number, isChecked: boolean) {
-  const index = todos.value.findIndex((todo) => todo.id === id)
+  const index = todos.value.findIndex((todo) => todo._id === id)
   const copyToDo = todos.value.splice(index, 1)
   if (!copyToDo[0]) {
     return
@@ -91,13 +90,12 @@ function animate(id: number, isChecked: boolean) {
 
 function addToDo(todo: Todo) {
   const newTodo = {
-    _id: '',
+    _id: new Date().getTime(),
     title: todo.title,
     description: todo.description,
     priority: todo.priority,
     isChecked: todo.isChecked,
     dueDate: todo.dueDate,
-    id: new Date().getTime(),
   }
   todos.value.unshift(newTodo)
   saveToLocalStorage()
@@ -108,21 +106,20 @@ function addToDo(todo: Todo) {
 }
 
 function removeToDo(id: number) {
-  todos.value = todos.value.filter((todo) => todo.id !== id)
+  todos.value = todos.value.filter((todo) => todo._id !== id)
   saveToLocalStorage()
 }
 
 function editToDo(todo: Todo) {
   const newTodo = {
-    _id: '',
+    _id: todo._id,
     title: todo.title,
     description: todo.description,
     priority: todo.priority,
     isChecked: todo.isChecked,
     dueDate: todo.dueDate,
-    id: todo.id,
   }
-  const index: number = todos.value.findIndex((todo) => todo.id === newTodo.id)
+  const index: number = todos.value.findIndex((todo) => todo._id === newTodo._id)
   todos.value[index] = newTodo
   saveToLocalStorage()
   if (isSortActive.value) {

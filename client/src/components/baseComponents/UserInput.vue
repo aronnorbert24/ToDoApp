@@ -23,11 +23,11 @@ interface Props {
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', email: string, name: string): void
+  (e: 'update:modelValue', email: string): void
 }>()
 
 const value = computed({
   get: () => props.modelValue,
-  set: (newValue) => emit('update:modelValue', newValue, props.label),
+  set: (newValue) => emit('update:modelValue', newValue),
 })
 </script>
