@@ -1,42 +1,42 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 export interface Todo {
-	title: string;
-	description: string;
-	priority: string;
-	isChecked: boolean;
-	dueDate: Date;
-	userId: mongoose.Schema.Types.ObjectId;
+  title: string
+  description: string
+  priority: string
+  isChecked: boolean
+  dueDate: Date
+  userId: mongoose.Schema.Types.ObjectId
 }
 
 const todoSchema = new mongoose.Schema({
-	title: {
-		type: String,
-		required: true,
-	},
+  title: {
+    type: String,
+    required: true,
+  },
 
-	description: String,
+  description: String,
 
-	priority: {
-		type: String,
-		default: "Medium",
-	},
+  priority: {
+    type: String,
+    default: 'Medium',
+  },
 
-	isChecked: {
-		type: Boolean,
-		default: false,
-	},
+  isChecked: {
+    type: Boolean,
+    default: false,
+  },
 
-	dueDate: {
-		type: Date,
-		default: Date.now(),
-	},
+  dueDate: {
+    type: Date,
+    default: Date.now(),
+  },
 
-	userId: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: "User",
-		required: true,
-	},
-});
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+})
 
-module.exports = mongoose.model("todo", todoSchema);
+export default mongoose.model('todo', todoSchema)
