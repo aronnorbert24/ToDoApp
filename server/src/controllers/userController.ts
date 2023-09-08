@@ -16,9 +16,8 @@ class UserController {
 
       if (compareSync(password, foundUser.password)) {
         return res.status(200).json(foundUser)
-      } else {
-        return res.status(401).send('Incorrect password, please try again')
       }
+      return res.status(401).send('Incorrect password, please try again')
     } catch (error) {
       console.error(error)
       return res.status(500).send('Login failed. Please check your input, and try again.')

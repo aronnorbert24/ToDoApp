@@ -39,4 +39,4 @@ const todoSchema = new mongoose.Schema({
   },
 })
 
-export default mongoose.model('todo', todoSchema)
+export default mongoose.model<Todo>('todo', todoSchema)
