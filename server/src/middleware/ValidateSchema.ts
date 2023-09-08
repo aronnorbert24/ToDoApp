@@ -29,10 +29,11 @@ export const Schemas = {
       password: Joi.string().required(),
     }),
   },
-  post: {
+  todo: {
     create: Joi.object<Todo>({
       title: Joi.string().required(),
       priority: Joi.string().required(),
+      isChecked: Joi.string().required(),
       dueDate: Joi.date().required(),
       userId: Joi.string().required(),
     }),

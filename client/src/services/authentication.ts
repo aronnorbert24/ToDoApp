@@ -19,7 +19,7 @@ export async function loginUser(email: string, password: string) {
 
 export async function registerUser(data: User) {
   try {
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/register-user`, {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/register`, {
       firstName: data.firstName,
       lastName: data.lastName,
       email: data.email,
