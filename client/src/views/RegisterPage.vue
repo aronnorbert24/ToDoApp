@@ -6,10 +6,10 @@
     <div class="h-2/55 m-auto mt-10 justify-center rounded-3xl bg-yellow-50 phone:w-8/12 computer:w-4/12">
       <p class="ml-auto mr-auto w-full pt-4 text-3xl font-semibold">Register</p>
 
-      <UserInput v-model="user.firstName" label="First Name:" property="firstName" />
-      <UserInput v-model="user.lastName" label="Last Name:" property="lastName" />
-      <UserInput v-model="user.email" label="Email:" property="email" />
-      <UserInput v-model="user.password" label="Password:" property="password" />
+      <UserInput v-model="user.firstName" type="text" label="First Name:" property="firstName" />
+      <UserInput v-model="user.lastName" type="text" label="Last Name:" property="lastName" />
+      <UserInput v-model="user.email" type="email" label="Email:" property="email" />
+      <UserInput v-model="user.password" type="password" label="Password:" property="password" />
 
       <ErrorMessage :error="errorMessage" />
 

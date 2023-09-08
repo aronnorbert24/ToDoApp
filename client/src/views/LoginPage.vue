@@ -6,8 +6,8 @@
     <div class="m-auto mt-10 h-1/3 justify-center rounded-3xl bg-yellow-50 phone:w-8/12 computer:w-4/12">
       <p class="ml-auto mr-auto w-full pt-4 text-3xl font-semibold">Login</p>
 
-      <UserInput v-model="email" label="Email:" property="email" />
-      <UserInput v-model="password" label="Password:" property="password" />
+      <UserInput v-model="email" type="email" label="Email:" property="email" />
+      <UserInput v-model="password" type="password" label="Password:" property="password" />
       <ErrorMessage :error="errorMessage" />
       <button
         class="mt-10 h-10 w-10/12 rounded-3xl border-none bg-gradient-to-br from-cyan-400 to-green-500 font-semibold text-white transition-transform duration-500 ease-in-out hover:scale-110"

@@ -3,7 +3,7 @@
     <label :for="property">{{ label }}</label>
     <input
       v-model="value"
-      :type="property"
+      :type="type"
       :name="property"
       :id="property"
       class="rounded-lg bg-slate-100 indent-2 outline-black phone:w-7/12"
@@ -16,6 +16,7 @@ import { computed } from 'vue'
 
 interface Props {
   property: string
+  type: string
   label: string
   modelValue: string
 }
