@@ -105,7 +105,7 @@ function saveTodo() {
     return
   }
   updatedToDo.value.dueDate = new Date(toDoDate.value)
-  if (updatedToDo.value._id) {
+  if (!updatedToDo.value._id) {
     emit('addToDo', updatedToDo.value)
     return
   }
