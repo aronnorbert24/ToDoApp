@@ -15,13 +15,13 @@ class UserController {
       }
 
       if (compareSync(password, foundUser.password)) {
-        res.status(200).json(foundUser)
+        return res.status(200).json(foundUser)
       } else {
-        res.status(401).send('Incorrect password, please try again')
+        return res.status(401).send('Incorrect password, please try again')
       }
     } catch (error) {
       console.error(error)
-      return res.status(500).send('Registration failed. Please check your input, and try again.')
+      return res.status(500).send('Login failed. Please check your input, and try again.')
     }
   }
   async register(req: Request, res: Response) {
@@ -32,18 +32,16 @@ class UserController {
       // check if the email has been used before
       if (duplicateUser) {
         return res.status(400).send('A user with that email already exists.')
-      } else {
-        // hash user password
-        const salt = genSaltSync(10)
-        newUser.password = hashSync(newUser.password, salt)
-        // save data to the database
-        const savedUser = await userService.register(newUser)
-
-        res.json(savedUser)
       }
+      // hash user password
+      const salt = genSaltSync(10)
+      newUser.password = hashSync(newUser.password, salt)
+      // save data to the database
+      const savedUser = await userService.register(newUser)
+      return res.status(201).json(savedUser)
     } catch (error) {
       console.error(error)
-      return res.status(500).send('Login failed. Please check your input and try again.')
+      return res.status(500).send('Registration failed. Please check your input and try again.')
     }
   }
 }

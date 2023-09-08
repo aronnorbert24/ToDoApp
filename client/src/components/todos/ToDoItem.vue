@@ -69,8 +69,8 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'editToDo', todo: Todo): void
-  (e: 'deleteToDo', id: number): void
-  (e: 'toggleCheck', isChecked: boolean, id: number): void
+  (e: 'deleteToDo', id: string): void
+  (e: 'toggleCheck', isChecked: boolean, id: string): void
 }>()
 
 const priorityClass: Record<string, string> = {
@@ -107,7 +107,7 @@ function editToDo(todo: Todo) {
   emit('editToDo', todo)
 }
 
-function deleteToDo(id: number) {
+function deleteToDo(id: string) {
   toggleEditState()
   emit('deleteToDo', id)
 }

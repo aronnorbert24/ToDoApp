@@ -8,7 +8,7 @@
 
       <UserInput v-model="email" label="Email:" property="email" />
       <UserInput v-model="password" label="Password:" property="password" />
-      <ErrorButton :error="errorMessage" />
+      <ErrorMessage :error="errorMessage" />
       <button
         class="mt-10 h-10 w-10/12 rounded-3xl border-none bg-gradient-to-br from-cyan-400 to-green-500 font-semibold text-white transition-transform duration-500 ease-in-out hover:scale-110"
         @click="login"
@@ -23,13 +23,11 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { loginUser } from '../services/authentication'
 import UserInput from '../components/baseComponents/UserInput.vue'
-import ErrorButton from '../components/baseComponents/ErrorButton.vue'
+import ErrorMessage from '../components/baseComponents/ErrorMessage.vue'
 
 const email = ref('')
 const password = ref('')

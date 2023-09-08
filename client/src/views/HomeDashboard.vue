@@ -39,7 +39,7 @@ const activeProperty = ref('')
 const isSortActive = ref(false)
 const todos = ref<Todo[]>(getFromLocalStorage())
 const todo = ref<Todo>({
-  _id: -1,
+  _id: '',
   title: 'Title',
   description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
   priority: 'Medium',
@@ -68,7 +68,7 @@ function getFromLocalStorage() {
   return savedTodos ? JSON.parse(savedTodos) : []
 }
 
-function toggleCheck(isChecked: boolean, id: number) {
+function toggleCheck(isChecked: boolean, id: string) {
   const updatedTodo = todos.value.find((todo) => todo._id === id)
   if (updatedTodo) {
     updatedTodo.isChecked = isChecked
@@ -78,7 +78,7 @@ function toggleCheck(isChecked: boolean, id: number) {
   }
 }
 
-function animate(id: number, isChecked: boolean) {
+function animate(id: string, isChecked: boolean) {
   const index = todos.value.findIndex((todo) => todo._id === id)
   const copyToDo = todos.value.splice(index, 1)
   if (!copyToDo[0]) {
@@ -90,7 +90,7 @@ function animate(id: number, isChecked: boolean) {
 
 function addToDo(todo: Todo) {
   const newTodo = {
-    _id: new Date().getTime(),
+    _id: '',
     title: todo.title,
     description: todo.description,
     priority: todo.priority,
@@ -105,7 +105,7 @@ function addToDo(todo: Todo) {
   toggleForm()
 }
 
-function removeToDo(id: number) {
+function removeToDo(id: string) {
   todos.value = todos.value.filter((todo) => todo._id !== id)
   saveToLocalStorage()
 }

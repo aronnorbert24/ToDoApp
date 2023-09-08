@@ -25,6 +25,8 @@ export async function registerUser(data: User) {
       email: data.email,
       password: data.password,
     })
+    localStorage.setItem('firstName', response.data.firstName)
+    localStorage.setItem('lastName', response.data.lastName)
     return response.data
   } catch (error) {
     console.error(error)

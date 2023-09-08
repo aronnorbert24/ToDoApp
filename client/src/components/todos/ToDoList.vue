@@ -18,11 +18,11 @@ defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'editToDo', todo: Todo): void
-  (e: 'deleteToDo', id: number): void
-  (e: 'toggleCheck', isChecked: boolean, id: number): void
+  (e: 'deleteToDo', id: string): void
+  (e: 'toggleCheck', isChecked: boolean, id: string): void
 }>()
 
-function toggleCheck(isChecked: boolean, id: number) {
+function toggleCheck(isChecked: boolean, id: string) {
   emit('toggleCheck', isChecked, id)
 }
 
@@ -30,7 +30,7 @@ function editToDo(todo: Todo) {
   emit('editToDo', todo)
 }
 
-function deleteToDo(id: number) {
+function deleteToDo(id: string) {
   emit('deleteToDo', id)
 }
 </script>

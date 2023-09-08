@@ -11,7 +11,7 @@
       <UserInput v-model="user.email" label="Email:" property="email" />
       <UserInput v-model="user.password" label="Password:" property="password" />
 
-      <ErrorButton :error="errorMessage" />
+      <ErrorMessage :error="errorMessage" />
 
       <button
         class="mt-10 h-10 w-6/12 rounded-3xl border-none bg-gradient-to-br from-cyan-400 to-green-500 font-semibold text-white transition-transform duration-500 ease-in-out hover:scale-110 phone:mt-5"
@@ -27,13 +27,11 @@
 </template>
 
 <script setup lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import UserInput from '../components/baseComponents/UserInput.vue'
-import ErrorButton from '../components/baseComponents/ErrorButton.vue'
-import { registerUser, loginUser } from '../services/authentication'
+import ErrorMessage from '../components/baseComponents/ErrorMessage.vue'
+import { registerUser } from '../services/authentication'
 import { User } from '../types/user'
 
 const user = ref<User>({
@@ -54,7 +52,6 @@ async function register() {
 
   try {
     await registerUser(user.value)
-    await loginUser(user.value.email, user.value.password)
     router.push({ name: 'Dashboard' })
   } catch (error: any) {
     console.error('Register Error', error)

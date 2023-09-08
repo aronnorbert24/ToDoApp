@@ -1,6 +1,7 @@
 import Joi, { ObjectSchema } from 'joi'
 import { NextFunction, Request, Response } from 'express'
 import { User } from '../models/User'
+import { Todo } from '../models/Todo'
 
 export const ValidateSchema = (schema: ObjectSchema) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -26,6 +27,20 @@ export const Schemas = {
     login: Joi.object<User>({
       email: Joi.string().required(),
       password: Joi.string().required(),
+    }),
+  },
+  post: {
+    create: Joi.object<Todo>({
+      title: Joi.string().required(),
+      priority: Joi.string().required(),
+      dueDate: Joi.date().required(),
+      userId: Joi.string().required(),
+    }),
+    update: Joi.object<Todo>({
+      title: Joi.string().required(),
+      priority: Joi.string().required(),
+      dueDate: Joi.date().required(),
+      userId: Joi.string().required(),
     }),
   },
 }
