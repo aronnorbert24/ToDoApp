@@ -34,7 +34,7 @@
         {{ todo.description }}
       </p>
       <ToDoChecked
-        :key="todo.id"
+        :key="todo._id"
         :isChecked="todo.isChecked"
         @checkToDo="checkToDo"
         class="relative mb-4 mr-6 h-10 w-10 rounded-full border-8 hover:cursor-pointer phone:mr-0 phone:h-6 phone:w-6 phone:border-4"
@@ -69,8 +69,8 @@ const props = defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'editToDo', todo: Todo): void
-  (e: 'deleteToDo', id: number): void
-  (e: 'toggleCheck', isChecked: boolean, id: number): void
+  (e: 'deleteToDo', id: string): void
+  (e: 'toggleCheck', isChecked: boolean, id: string): void
 }>()
 
 const priorityClass: Record<string, string> = {
@@ -99,7 +99,7 @@ function toggleEditState() {
 
 function checkToDo(isChecked: boolean) {
   toggleEditState()
-  emit('toggleCheck', isChecked, props.todo.id)
+  emit('toggleCheck', isChecked, props.todo._id)
 }
 
 function editToDo(todo: Todo) {
@@ -107,7 +107,7 @@ function editToDo(todo: Todo) {
   emit('editToDo', todo)
 }
 
-function deleteToDo(id: number) {
+function deleteToDo(id: string) {
   toggleEditState()
   emit('deleteToDo', id)
 }

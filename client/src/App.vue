@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TodoApp from './components/todos/TodoApp.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <TodoApp />
+  <div class="h-screen w-screen">
+    <RouterView></RouterView>
+  </div>
 </template>
-
-<style scoped></style>

@@ -3,12 +3,17 @@
     <p
       class="w-36 text-left font-priority text-2xl font-medium leading-7 text-black phone:w-20 phone:text-sm phone:leading-4"
     >
-      Welcome Aron Simon
+      Welcome {{ firstName }} {{ lastName }}
     </p>
-    <button class="bg-border-neutral-200 ml-auto h-[52px] w-[120px] rounded-2xl text-center phone:hidden">
+    <RouterLink
+      class="ml-auto h-[52px] w-[120px] rounded-2xl border-0 bg-neutral-200 pt-3 text-center leading-8 text-black transition-transform duration-300 ease-in-out hover:scale-110 phone:hidden"
+      href="#"
+      to="/"
+      @click.prevent="logout"
+    >
       Log Out
-    </button>
-    <button @click.prevent class="w-[66px] bg-transparent computer:hidden">
+    </RouterLink>
+    <button class="w-[66px] border-0 bg-transparent computer:hidden">
       <LogOutIcon />
     </button>
   </div>
@@ -29,8 +34,17 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import PlusIcon from './PlusIcon.vue'
 import LogOutIcon from './LogOutIcon.vue'
 
 const emit = defineEmits(['showForm'])
+
+const firstName = ref(localStorage.getItem('firstName'))
+const lastName = ref(localStorage.getItem('lastName'))
+
+function logout() {
+  localStorage.clear()
+}
 </script>
