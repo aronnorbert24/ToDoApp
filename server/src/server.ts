@@ -1,7 +1,8 @@
 import express, { Request, Response, NextFunction } from 'express'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import router from './routes/router'
+import user from './routes/user'
+import todo from './routes/todo'
 const { database, connectionString, port } = require('./dotenv.config')
 
 const app = express()
@@ -36,6 +37,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next()
 })
 
-app.use('/', router)
+app.use('/user', user)
+app.use('/todo', todo)
 
 app.listen(port, () => console.log(port))

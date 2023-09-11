@@ -5,6 +5,10 @@ class UserService {
     return UserModel.findOne({ email })
   }
 
+  async getPostsById(_id: string) {
+    return UserModel.findById({ _id }).populate('posts')
+  }
+
   async register(data: User) {
     const newUser = new UserModel({
       firstName: data.firstName,

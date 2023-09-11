@@ -28,6 +28,7 @@ import ToDoHeader from '../components/header/ToDoHeader.vue'
 import ToDoSearch from '../components/header/ToDoSearch.vue'
 import ToDoSort from '../components/header/ToDoSort.vue'
 import EmptyListImage from '../components/icons/EmptyListImage.vue'
+import { saveTodo, getTodos } from '../services/todo'
 import { Todo } from '../types/todo'
 
 const isFormShown: Ref<boolean> = ref(false)
@@ -37,7 +38,6 @@ const searchQuery = ref('')
 const activeOrder = ref('')
 const activeProperty = ref('')
 const isSortActive = ref(false)
-const todos = ref<Todo[]>(getFromLocalStorage())
 const todo = ref<Todo>({
   _id: '',
   title: 'Title',
@@ -45,6 +45,9 @@ const todo = ref<Todo>({
   priority: 'Medium',
   isChecked: false,
   dueDate: new Date(),
+})
+const todos: Ref<Todo[]> = getFromLocalStorage().then((value) => {
+  return value
 })
 
 const filteredTodos = computed(() => {
@@ -63,9 +66,16 @@ function saveToLocalStorage() {
   localStorage.setItem('todos', JSON.stringify(todos.value))
 }
 
-function getFromLocalStorage() {
-  const savedTodos = localStorage.getItem('todos')
-  return savedTodos ? JSON.parse(savedTodos) : []
+async function getFromLocalStorage() {
+  try {
+    const userId = localStorage.getItem('_id')!
+    await getTodos(userId)
+    const savedTodos = localStorage.getItem('todos')
+    return savedTodos ? JSON.parse(savedTodos) : []
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
 function toggleCheck(isChecked: boolean, id: string) {
@@ -88,21 +98,29 @@ function animate(id: string, isChecked: boolean) {
   saveToLocalStorage()
 }
 
-function addToDo(todo: Todo) {
-  const newTodo = {
-    _id: '',
-    title: todo.title,
-    description: todo.description,
-    priority: todo.priority,
-    isChecked: todo.isChecked,
-    dueDate: todo.dueDate,
+async function addToDo(todo: Todo) {
+  try {
+    await saveTodo(todo)
+    const todoId = localStorage.getItem('todoId')!
+    const newTodo = {
+      _id: todoId,
+      title: todo.title,
+      description: todo.description,
+      priority: todo.priority,
+      isChecked: todo.isChecked,
+      dueDate: todo.dueDate,
+    }
+    console.log('Outside of axios')
+    todos.value.unshift(newTodo)
+    saveToLocalStorage()
+    if (isSortActive.value) {
+      sortTodos(activeProperty.value, activeOrder.value, isSortActive.value)
+    }
+    toggleForm()
+  } catch (error) {
+    console.error(error)
+    throw error
   }
-  todos.value.unshift(newTodo)
-  saveToLocalStorage()
-  if (isSortActive.value) {
-    sortTodos(activeProperty.value, activeOrder.value, isSortActive.value)
-  }
-  toggleForm()
 }
 
 function removeToDo(id: string) {
