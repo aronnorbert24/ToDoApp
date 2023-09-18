@@ -42,6 +42,7 @@ export const Schemas = {
       title: Joi.string().required(),
       description: Joi.string().allow('').optional(),
       priority: Joi.string().required(),
+      isChecked: Joi.boolean().required(),
       dueDate: Joi.date().required(),
     }),
     get: Joi.object<Todo>({

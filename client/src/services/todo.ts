@@ -38,6 +38,7 @@ export async function editTodo(_id: string, todo: Todo) {
       title: todo.title,
       description: todo.description,
       priority: todo.priority,
+      isChecked: todo.isChecked,
       dueDate: todo.dueDate,
     })
 
