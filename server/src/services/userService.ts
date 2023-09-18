@@ -7,7 +7,7 @@ class UserService {
   }
 
   async getTodosById(_id: string) {
-    const todos = await TodoModel.find({ userId: _id }).exec()
+    const todos = await TodoModel.find({ userId: _id }).sort({ isChecked: 1 }).exec()
     return todos
   }
 
