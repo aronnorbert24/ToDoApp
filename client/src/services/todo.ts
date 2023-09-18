@@ -4,8 +4,6 @@ import { Todo } from '../types/todo'
 export async function saveTodo(data: Todo) {
   const userId = localStorage.getItem('_id')
   const dueDate = new Date(data.dueDate)
-  console.log(data)
-  console.log(userId)
   try {
     const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/todo/save`, {
       title: data.title,
@@ -15,7 +13,6 @@ export async function saveTodo(data: Todo) {
       dueDate: dueDate,
       userId: userId,
     })
-    console.log('Outside of axios, but inside of services')
     localStorage.setItem('todoId', response.data._id)
   } catch (error) {
     console.error(error)
@@ -25,11 +22,35 @@ export async function saveTodo(data: Todo) {
 
 export async function getTodos(_id: string) {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo`, {
-      userId: _id,
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo/${_id}`)
+    localStorage.setItem('todos', JSON.stringify(response.data))
+
+    return JSON.stringify(response.data)
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export async function editTodo(_id: string, todo: Todo) {
+  try {
+    const response = await axios.patch(`${import.meta.env.VITE_BASE_URL}/todo/edit/${_id}`, {
+      title: todo.title,
+      description: todo.description,
+      priority: todo.priority,
+      dueDate: todo.dueDate,
     })
 
-    localStorage.setItem('todos', response.data.todos)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+export async function deleteTodo(id: string) {
+  try {
+    await axios.delete(`${import.meta.env.VITE_BASE_URL}/todo/delete/${id}`)
   } catch (error) {
     console.error(error)
     throw error

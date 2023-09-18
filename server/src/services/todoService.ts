@@ -15,6 +15,21 @@ class TodoService {
 
     return savedTodo
   }
+
+  async findTodoById(todoId: string) {
+    const todo = await TodoModel.findById(todoId).exec()
+    return todo
+  }
+
+  async updateTodoById(todoId: string, newTodo: Todo) {
+    await TodoModel.findByIdAndUpdate(todoId, newTodo)
+    const updatedTodo = this.findTodoById(todoId)
+    return updatedTodo
+  }
+
+  async deleteTodoById(todoId: string) {
+    await TodoModel.findByIdAndDelete(todoId)
+  }
 }
 
 export default new TodoService()

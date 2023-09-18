@@ -1,12 +1,14 @@
 import UserModel, { User } from '../models/User'
+import TodoModel from '../models/Todo'
 
 class UserService {
   async findUserByEmail(email: string) {
     return UserModel.findOne({ email })
   }
 
-  async getPostsById(_id: string) {
-    return UserModel.findById({ _id }).populate('posts')
+  async getTodosById(_id: string) {
+    const todos = await TodoModel.find({ userId: _id }).exec()
+    return todos
   }
 
   async register(data: User) {

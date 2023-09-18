@@ -28,7 +28,7 @@ import ToDoHeader from '../components/header/ToDoHeader.vue'
 import ToDoSearch from '../components/header/ToDoSearch.vue'
 import ToDoSort from '../components/header/ToDoSort.vue'
 import EmptyListImage from '../components/icons/EmptyListImage.vue'
-import { saveTodo, getTodos } from '../services/todo'
+import { saveTodo, getTodos, editTodo, deleteTodo } from '../services/todo'
 import { Todo } from '../types/todo'
 
 const isFormShown: Ref<boolean> = ref(false)
@@ -38,6 +38,7 @@ const searchQuery = ref('')
 const activeOrder = ref('')
 const activeProperty = ref('')
 const isSortActive = ref(false)
+const todos = ref<Todo[]>(getFromLocalStorage())
 const todo = ref<Todo>({
   _id: '',
   title: 'Title',
@@ -45,9 +46,6 @@ const todo = ref<Todo>({
   priority: 'Medium',
   isChecked: false,
   dueDate: new Date(),
-})
-const todos: Ref<Todo[]> = getFromLocalStorage().then((value) => {
-  return value
 })
 
 const filteredTodos = computed(() => {
@@ -66,11 +64,26 @@ function saveToLocalStorage() {
   localStorage.setItem('todos', JSON.stringify(todos.value))
 }
 
-async function getFromLocalStorage() {
+async function getFromDatabase() {
   try {
     const userId = localStorage.getItem('_id')!
-    await getTodos(userId)
+    const savedTodos = await getTodos(userId)
+    return savedTodos ? savedTodos : []
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
+function getFromLocalStorage() {
+  try {
+    getFromDatabase()
     const savedTodos = localStorage.getItem('todos')
+    if (!savedTodos) {
+      setTimeout(() => {
+        window.location.reload()
+      }, 10)
+    }
     return savedTodos ? JSON.parse(savedTodos) : []
   } catch (error) {
     console.error(error)
@@ -110,7 +123,6 @@ async function addToDo(todo: Todo) {
       isChecked: todo.isChecked,
       dueDate: todo.dueDate,
     }
-    console.log('Outside of axios')
     todos.value.unshift(newTodo)
     saveToLocalStorage()
     if (isSortActive.value) {
@@ -123,21 +135,16 @@ async function addToDo(todo: Todo) {
   }
 }
 
-function removeToDo(id: string) {
+async function removeToDo(id: string) {
+  await deleteTodo(id)
   todos.value = todos.value.filter((todo) => todo._id !== id)
   saveToLocalStorage()
 }
 
-function editToDo(todo: Todo) {
-  const newTodo = {
-    _id: todo._id,
-    title: todo.title,
-    description: todo.description,
-    priority: todo.priority,
-    isChecked: todo.isChecked,
-    dueDate: todo.dueDate,
-  }
-  const index: number = todos.value.findIndex((todo) => todo._id === newTodo._id)
+async function editToDo(todo: Todo) {
+  const newTodo = await editTodo(todo._id, todo)
+  console.log(newTodo)
+  const index = todos.value.findIndex((todo) => todo._id === newTodo._id)
   todos.value[index] = newTodo
   saveToLocalStorage()
   if (isSortActive.value) {

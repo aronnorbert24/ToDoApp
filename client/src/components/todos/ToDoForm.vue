@@ -109,7 +109,6 @@ function saveTodo() {
   }
   updatedToDo.value.dueDate = new Date(toDoDate.value)
   if (!updatedToDo.value._id) {
-    console.log('Inside emit if')
     emit('addToDo', updatedToDo.value)
     return
   }
