@@ -28,6 +28,7 @@ import ToDoHeader from '../components/header/ToDoHeader.vue'
 import ToDoSearch from '../components/header/ToDoSearch.vue'
 import ToDoSort from '../components/header/ToDoSort.vue'
 import EmptyListImage from '../components/icons/EmptyListImage.vue'
+import { saveTodo, getTodos, editTodo, deleteTodo } from '../services/todo'
 import { Todo } from '../types/todo'
 
 const isFormShown: Ref<boolean> = ref(false)
@@ -63,9 +64,31 @@ function saveToLocalStorage() {
   localStorage.setItem('todos', JSON.stringify(todos.value))
 }
 
+async function getFromDatabase() {
+  try {
+    const userId = localStorage.getItem('_id')!
+    const savedTodos = await getTodos(userId)
+    return savedTodos ? savedTodos : []
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
+
 function getFromLocalStorage() {
-  const savedTodos = localStorage.getItem('todos')
-  return savedTodos ? JSON.parse(savedTodos) : []
+  try {
+    getFromDatabase()
+    const savedTodos = localStorage.getItem('todos')
+    if (!savedTodos) {
+      setTimeout(() => {
+        window.location.reload()
+      }, 10)
+    }
+    return savedTodos ? JSON.parse(savedTodos) : []
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
 }
 
 function toggleCheck(isChecked: boolean, id: string) {
@@ -88,38 +111,40 @@ function animate(id: string, isChecked: boolean) {
   saveToLocalStorage()
 }
 
-function addToDo(todo: Todo) {
-  const newTodo = {
-    _id: '',
-    title: todo.title,
-    description: todo.description,
-    priority: todo.priority,
-    isChecked: todo.isChecked,
-    dueDate: todo.dueDate,
+async function addToDo(todo: Todo) {
+  try {
+    await saveTodo(todo)
+    const todoId = localStorage.getItem('todoId')!
+    const newTodo = {
+      _id: todoId,
+      title: todo.title,
+      description: todo.description,
+      priority: todo.priority,
+      isChecked: todo.isChecked,
+      dueDate: todo.dueDate,
+    }
+    todos.value.unshift(newTodo)
+    saveToLocalStorage()
+    if (isSortActive.value) {
+      sortTodos(activeProperty.value, activeOrder.value, isSortActive.value)
+    }
+    toggleForm()
+  } catch (error) {
+    console.error(error)
+    throw error
   }
-  todos.value.unshift(newTodo)
-  saveToLocalStorage()
-  if (isSortActive.value) {
-    sortTodos(activeProperty.value, activeOrder.value, isSortActive.value)
-  }
-  toggleForm()
 }
 
-function removeToDo(id: string) {
+async function removeToDo(id: string) {
+  await deleteTodo(id)
   todos.value = todos.value.filter((todo) => todo._id !== id)
   saveToLocalStorage()
 }
 
-function editToDo(todo: Todo) {
-  const newTodo = {
-    _id: todo._id,
-    title: todo.title,
-    description: todo.description,
-    priority: todo.priority,
-    isChecked: todo.isChecked,
-    dueDate: todo.dueDate,
-  }
-  const index: number = todos.value.findIndex((todo) => todo._id === newTodo._id)
+async function editToDo(todo: Todo) {
+  const newTodo = await editTodo(todo._id, todo)
+  console.log(newTodo)
+  const index = todos.value.findIndex((todo) => todo._id === newTodo._id)
   todos.value[index] = newTodo
   saveToLocalStorage()
   if (isSortActive.value) {

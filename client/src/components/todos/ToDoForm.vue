@@ -35,6 +35,7 @@
       v-model="updatedToDo.description"
     ></textarea>
     <div class="mt-4 flex items-center justify-start">
+      <ErrorMessage :error="errorMessage" />
       <button
         @click.prevent="saveTodo"
         class="mb-4 ml-6 h-12 w-28 rounded-2xl bg-green-400 font-header text-lg font-semibold leading-6 text-white phone:ml-4 phone:h-8 phone:w-16 phone:rounded-lg phone:px-3 phone:py-1.5 phone:text-sm phone:leading-4"
@@ -62,6 +63,7 @@ import { ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import ToDoPriority from './ToDoPriority.vue'
 import DeletePopup from './DeletePopup.vue'
+import ErrorMessage from '../baseComponents/ErrorMessage.vue'
 import { Todo } from '../../types/todo'
 import { formatDate } from '../../helper/helpers'
 
@@ -74,17 +76,18 @@ const props = defineProps<Props>()
 const emit = defineEmits(['addToDo', 'deleteToDo', 'editToDo'])
 
 const updatedToDo = ref<Todo>({
-  _id: props.todo._id,
   title: props.todo.title,
   description: props.todo.description,
   priority: props.todo.priority,
   isChecked: props.todo.isChecked,
   dueDate: props.todo.dueDate,
+  _id: props.todo._id,
 })
 
 const isDropdownShowing = ref(false)
 const isDeletePopupVisible = ref(false)
 const hideDeletePopupRef = ref(null)
+const errorMessage = ref('')
 const toDoDate = ref(formatDate(updatedToDo.value.dueDate, 'form'))
 const currentDate = ref(formatDate(new Date(), 'form'))
 
@@ -102,7 +105,7 @@ function toggleDeletePopup() {
 
 function saveTodo() {
   if (!updatedToDo.value.title.length) {
-    return
+    errorMessage.value = 'Please fill in the title.'
   }
   updatedToDo.value.dueDate = new Date(toDoDate.value)
   if (!updatedToDo.value._id) {

@@ -32,15 +32,20 @@ export const Schemas = {
   todo: {
     create: Joi.object<Todo>({
       title: Joi.string().required(),
+      description: Joi.string().allow('').optional(),
       priority: Joi.string().required(),
-      isChecked: Joi.string().required(),
+      isChecked: Joi.boolean().required(),
       dueDate: Joi.date().required(),
       userId: Joi.string().required(),
     }),
     update: Joi.object<Todo>({
       title: Joi.string().required(),
+      description: Joi.string().allow('').optional(),
       priority: Joi.string().required(),
+      isChecked: Joi.boolean().required(),
       dueDate: Joi.date().required(),
+    }),
+    get: Joi.object<Todo>({
       userId: Joi.string().required(),
     }),
   },
