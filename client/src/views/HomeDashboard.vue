@@ -91,10 +91,11 @@ function getFromLocalStorage() {
   }
 }
 
-function toggleCheck(isChecked: boolean, id: string) {
+async function toggleCheck(isChecked: boolean, id: string) {
   const updatedTodo = todos.value.find((todo) => todo._id === id)
   if (updatedTodo) {
     updatedTodo.isChecked = isChecked
+    await editTodo(id, updatedTodo)
   }
   if (!isSortActive.value) {
     animate(id, isChecked)
