@@ -1,6 +1,9 @@
 import axios from 'axios'
 import { Todo } from '../types/todo'
 
+const token = localStorage.getItem('token')
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
 export async function saveTodo(data: Todo) {
   const userId = localStorage.getItem('_id')
   const dueDate = new Date(data.dueDate)

@@ -144,7 +144,6 @@ async function removeToDo(id: string) {
 
 async function editToDo(todo: Todo) {
   const newTodo = await editTodo(todo._id, todo)
-  console.log(newTodo)
   const index = todos.value.findIndex((todo) => todo._id === newTodo._id)
   todos.value[index] = newTodo
   saveToLocalStorage()
