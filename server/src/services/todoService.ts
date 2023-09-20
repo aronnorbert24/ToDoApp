@@ -1,4 +1,4 @@
-import TodoModel, { Todo } from '../models/Todo'
+import TodoModel, { Todo, Archive } from '../models/Todo'
 
 class TodoService {
   async saveTodo(data: Todo) {
@@ -28,7 +28,18 @@ class TodoService {
   }
 
   async deleteTodoById(todoId: string) {
-    await TodoModel.findByIdAndDelete(todoId)
+    const archivedTodo = await TodoModel.findByIdAndDelete(todoId)
+    if (archivedTodo) {
+      const newTodo = new Archive({
+        title: archivedTodo.title,
+        description: archivedTodo.description,
+        priority: archivedTodo.priority,
+        isChecked: archivedTodo.isChecked,
+        dueDate: archivedTodo.dueDate,
+        userId: archivedTodo.userId,
+      })
+      await newTodo.save()
+    }
   }
 }
 
