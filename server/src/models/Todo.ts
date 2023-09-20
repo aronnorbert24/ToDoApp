@@ -39,4 +39,6 @@ const todoSchema = new mongoose.Schema({
   },
 })
 
+export const Archive = mongoose.model<Todo>('archives', todoSchema)
+
 export default mongoose.model<Todo>('todos', todoSchema)
