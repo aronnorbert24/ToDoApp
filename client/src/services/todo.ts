@@ -1,6 +1,11 @@
 import axios from 'axios'
 import { Todo } from '../types/todo'
 
+const token = localStorage.getItem('token')
+if (token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+}
+
 export async function saveTodo(data: Todo) {
   const userId = localStorage.getItem('_id')
   const dueDate = new Date(data.dueDate)
@@ -25,7 +30,7 @@ export async function getTodos(_id: string) {
     const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo/${_id}`)
     localStorage.setItem('todos', JSON.stringify(response.data))
 
-    return JSON.stringify(response.data)
+    return response.data
   } catch (error) {
     console.error(error)
     throw error

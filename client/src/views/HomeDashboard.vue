@@ -20,7 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref, computed } from 'vue'
+import { ref, Ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import ToDoForm from '../components/todos/ToDoForm.vue'
 import ToDoList from '../components/todos/ToDoList.vue'
@@ -38,7 +39,7 @@ const searchQuery = ref('')
 const activeOrder = ref('')
 const activeProperty = ref('')
 const isSortActive = ref(false)
-const todos = ref<Todo[]>(getFromLocalStorage())
+const todos = ref<Todo[]>([])
 const todo = ref<Todo>({
   _id: '',
   title: 'Title',
@@ -64,27 +65,17 @@ function saveToLocalStorage() {
   localStorage.setItem('todos', JSON.stringify(todos.value))
 }
 
-async function getFromDatabase() {
+async function getFromLocalStorage() {
   try {
-    const userId = localStorage.getItem('_id')!
-    const savedTodos = await getTodos(userId)
-    return savedTodos ? savedTodos : []
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-}
-
-function getFromLocalStorage() {
-  try {
-    getFromDatabase()
-    const savedTodos = localStorage.getItem('todos')
-    if (!savedTodos) {
-      setTimeout(() => {
-        window.location.reload()
-      }, 10)
+    const router = useRouter()
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push({ name: 'Login' })
+      return []
     }
-    return savedTodos ? JSON.parse(savedTodos) : []
+    const userId = localStorage.getItem('_id')!
+    const newTodos = await getTodos(userId)
+    todos.value = newTodos
   } catch (error) {
     console.error(error)
     throw error
@@ -144,7 +135,6 @@ async function removeToDo(id: string) {
 
 async function editToDo(todo: Todo) {
   const newTodo = await editTodo(todo._id, todo)
-  console.log(newTodo)
   const index = todos.value.findIndex((todo) => todo._id === newTodo._id)
   todos.value[index] = newTodo
   saveToLocalStorage()
@@ -217,5 +207,9 @@ function sortByPriority(a: Todo, b: Todo) {
 }
 
 onClickOutside(closeFormRef, toggleForm)
+
+onMounted(() => {
+  getFromLocalStorage()
+})
 </script>
 <style scoped></style>

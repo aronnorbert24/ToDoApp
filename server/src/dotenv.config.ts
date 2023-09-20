@@ -10,4 +10,5 @@ module.exports = {
   database: process.env.DB_NAME || errorMessage('database name is missing'),
   connectionString: process.env.CONNECTION_STRING || errorMessage('connection string is missing'),
   port: process.env.PORT || errorMessage('port number is missing'),
+  secretToken: process.env.SECRET_TOKEN || errorMessage('secret token is missing'),
 }
