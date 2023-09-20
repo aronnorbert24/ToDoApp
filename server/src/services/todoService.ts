@@ -28,17 +28,17 @@ class TodoService {
   }
 
   async deleteTodoById(todoId: string) {
-    const archivedTodo = await TodoModel.findByIdAndDelete(todoId)
-    if (archivedTodo) {
-      const newTodo = new Archive({
-        title: archivedTodo.title,
-        description: archivedTodo.description,
-        priority: archivedTodo.priority,
-        isChecked: archivedTodo.isChecked,
-        dueDate: archivedTodo.dueDate,
-        userId: archivedTodo.userId,
+    const deletedTodo = await TodoModel.findByIdAndDelete(todoId)
+    if (deletedTodo) {
+      const archivedTodo = new Archive({
+        title: deletedTodo.title,
+        description: deletedTodo.description,
+        priority: deletedTodo.priority,
+        isChecked: deletedTodo.isChecked,
+        dueDate: deletedTodo.dueDate,
+        userId: deletedTodo.userId,
       })
-      await newTodo.save()
+      await archivedTodo.save()
     }
   }
 }
