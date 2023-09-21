@@ -16,6 +16,11 @@ class TodoService {
     return savedTodo
   }
 
+  async getTodosById(_id: string) {
+    const todos = await TodoModel.find({ userId: _id }).sort({ isChecked: 1 }).exec()
+    return todos
+  }
+
   async findTodoById(todoId: string) {
     const todo = await TodoModel.findById(todoId).exec()
     return todo
@@ -40,6 +45,16 @@ class TodoService {
       })
       await archivedTodo.save()
     }
+  }
+
+  async filterTodos(userId: string, filter: string) {
+    const todos = await this.getTodosById(userId)
+    return todos.filter((todo: Todo) => {
+      const filterSmall = filter.toLowerCase()
+      const titleSmall = todo.title.toLowerCase()
+      const descSmall = todo.description.toLowerCase()
+      return titleSmall.includes(filterSmall) || descSmall.includes(filterSmall)
+    })
   }
 }
 

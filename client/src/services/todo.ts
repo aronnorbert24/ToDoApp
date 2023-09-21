@@ -62,3 +62,13 @@ export async function deleteTodo(id: string) {
     throw error
   }
 }
+
+export async function filterTodos(id: string, filter: string) {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo/${id}/${filter}`)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}

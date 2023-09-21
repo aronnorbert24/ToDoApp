@@ -5,9 +5,12 @@ import { authenticateToken } from '../middleware/authentication'
 
 const todo = Router()
 
-todo.get('/:id', authenticateToken, todoController.getTodos)
-todo.post('/save', authenticateToken, ValidateSchema(Schemas.todo.create), todoController.saveTodo)
-todo.patch('/edit/:id', authenticateToken, ValidateSchema(Schemas.todo.update), todoController.editTodo)
-todo.delete('/delete/:id', authenticateToken, todoController.deleteTodo)
+todo.use(authenticateToken)
+
+todo.get('/:id', todoController.getTodos)
+todo.get('/:id/:filterValue', todoController.filterTodos)
+todo.post('/save', ValidateSchema(Schemas.todo.create), todoController.saveTodo)
+todo.patch('/edit/:id', ValidateSchema(Schemas.todo.update), todoController.editTodo)
+todo.delete('/delete/:id', todoController.deleteTodo)
 
 export default todo

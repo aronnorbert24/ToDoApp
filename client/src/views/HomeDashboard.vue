@@ -29,7 +29,7 @@ import ToDoHeader from '../components/header/ToDoHeader.vue'
 import ToDoSearch from '../components/header/ToDoSearch.vue'
 import ToDoSort from '../components/header/ToDoSort.vue'
 import EmptyListImage from '../components/icons/EmptyListImage.vue'
-import { saveTodo, getTodos, editTodo, deleteTodo } from '../services/todo'
+import { saveTodo, getTodos, editTodo, deleteTodo, filterTodos } from '../services/todo'
 import { Todo } from '../types/todo'
 
 const isFormShown: Ref<boolean> = ref(false)
@@ -39,6 +39,7 @@ const searchQuery = ref('')
 const activeOrder = ref('')
 const activeProperty = ref('')
 const isSortActive = ref(false)
+const userId = localStorage.getItem('_id')!
 const todos = ref<Todo[]>([])
 const todo = ref<Todo>({
   _id: '',
@@ -49,17 +50,7 @@ const todo = ref<Todo>({
   dueDate: new Date(),
 })
 
-const filteredTodos = computed(() => {
-  if (!searchQuery.value) {
-    return todos.value
-  }
-  return todos.value.filter((todo) => {
-    const searchSmall = searchQuery.value.toLowerCase()
-    const titleSmall = todo.title.toLowerCase()
-    const descSmall = todo.description.toLowerCase()
-    return titleSmall.includes(searchSmall) || descSmall.includes(searchSmall)
-  })
-})
+const filteredTodos = ref<Todo[]>([])
 
 function saveToLocalStorage() {
   localStorage.setItem('todos', JSON.stringify(todos.value))
@@ -73,9 +64,9 @@ async function getFromLocalStorage() {
       router.push({ name: 'Login' })
       return []
     }
-    const userId = localStorage.getItem('_id')!
     const newTodos = await getTodos(userId)
     todos.value = newTodos
+    filteredTodos.value = newTodos
   } catch (error) {
     console.error(error)
     throw error
@@ -147,8 +138,11 @@ function toggleForm() {
   isFormShown.value = !isFormShown.value
 }
 
-function searchToDos(item: string) {
+async function searchToDos(item: string) {
   searchQuery.value = item
+  filteredTodos.value = !searchQuery.value.length
+    ? (filteredTodos.value = todos.value)
+    : await filterTodos(userId, searchQuery.value)
 }
 
 function disactivateSort(isActive: boolean) {
