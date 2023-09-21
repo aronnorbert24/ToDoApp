@@ -154,57 +154,12 @@ async function sortTodos(property: string, order: string, isActive: boolean) {
   activeProperty.value = property
   isSortActive.value = isActive
   await todoSort(userId, property, order)
-  todos.value.sort((a: Todo, b: Todo) => {
-    switch (property) {
-      case 'Title':
-        return sortByTitle(a, b)
-      case 'Description':
-        return sortByDescription(a, b)
-      case 'Priority':
-        return sortByPriority(a, b)
-      case 'Date':
-        return sortByDate(a, b)
-      default:
-        return 0
-    }
-  })
-}
-
-function sortByTitle(a: Todo, b: Todo) {
-  const previous = a.title.trim().toLowerCase()
-  const next = b.title.trim().toLowerCase()
-  if (activeOrder.value === 'ascending') {
-    return previous < next ? -1 : previous > next ? 1 : 0
-  }
-  return previous < next ? 1 : previous > next ? -1 : 0
-}
-
-function sortByDescription(a: Todo, b: Todo) {
-  const previous = a.description.trim().toLowerCase()
-  const next = b.description.trim().toLowerCase()
-  if (activeOrder.value === 'ascending') {
-    return previous < next ? -1 : previous > next ? 1 : 0
-  }
-  return previous < next ? 1 : previous > next ? -1 : 0
-}
-
-function sortByDate(a: Todo, b: Todo) {
-  const previous = new Date(a.dueDate)
-  const next = new Date(b.dueDate)
-  return activeOrder.value === 'ascending' ? previous - next : next - previous
-}
-
-function sortByPriority(a: Todo, b: Todo) {
-  const priorityOrder = ['Low', 'Medium', 'High']
-  const previous = priorityOrder.indexOf(a.priority)
-  const next = priorityOrder.indexOf(b.priority)
-  return activeOrder.value === 'ascending' ? previous - next : next - previous
 }
 
 onClickOutside(closeFormRef, toggleForm)
 
-onMounted(() => {
-  getFromLocalStorage()
+onMounted(async () => {
+  await getFromLocalStorage()
 })
 </script>
 <style scoped></style>
