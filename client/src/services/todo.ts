@@ -72,3 +72,13 @@ export async function filterTodos(id: string, filter: string) {
     throw error
   }
 }
+
+export async function todoSort(id: string, property: string, order: string) {
+  try {
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo/${id}/${property}/${order}`)
+    return response.data
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
