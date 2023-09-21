@@ -9,6 +9,7 @@ todo.use(authenticateToken)
 
 todo.get('/:id', todoController.getTodos)
 todo.get('/:id/:filterValue', todoController.filterTodos)
+todo.get('/:id/:property/:order', todoController.sortTodos)
 todo.post('/save', ValidateSchema(Schemas.todo.create), todoController.saveTodo)
 todo.patch('/edit/:id', ValidateSchema(Schemas.todo.update), todoController.editTodo)
 todo.delete('/delete/:id', todoController.deleteTodo)

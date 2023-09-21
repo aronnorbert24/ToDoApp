@@ -29,7 +29,7 @@ import ToDoHeader from '../components/header/ToDoHeader.vue'
 import ToDoSearch from '../components/header/ToDoSearch.vue'
 import ToDoSort from '../components/header/ToDoSort.vue'
 import EmptyListImage from '../components/icons/EmptyListImage.vue'
-import { saveTodo, getTodos, editTodo, deleteTodo, filterTodos } from '../services/todo'
+import { saveTodo, getTodos, editTodo, deleteTodo, filterTodos, todoSort } from '../services/todo'
 import { Todo } from '../types/todo'
 
 const isFormShown: Ref<boolean> = ref(false)
@@ -149,10 +149,11 @@ function disactivateSort(isActive: boolean) {
   isSortActive.value = isActive
 }
 
-function sortTodos(property: string, order: string, isActive: boolean) {
+async function sortTodos(property: string, order: string, isActive: boolean) {
   activeOrder.value = order
   activeProperty.value = property
   isSortActive.value = isActive
+  await todoSort(userId, property, order)
   todos.value.sort((a: Todo, b: Todo) => {
     switch (property) {
       case 'Title':

@@ -1,4 +1,5 @@
 import TodoModel, { Todo, Archive } from '../models/Todo'
+import { sortTodos } from '../helpers/sortTodos'
 
 class TodoService {
   async saveTodo(data: Todo) {
@@ -55,6 +56,12 @@ class TodoService {
       const descSmall = todo.description.toLowerCase()
       return titleSmall.includes(filterSmall) || descSmall.includes(filterSmall)
     })
+  }
+
+  async sortTodos(userId: string, sortProperty: string, sortOrder: string) {
+    const todos = await this.getTodosById(userId)
+    const sortedTodos = sortTodos(todos, sortProperty, sortOrder)
+    return sortedTodos
   }
 }
 
