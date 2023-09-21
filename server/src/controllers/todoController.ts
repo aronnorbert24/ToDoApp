@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import todoService from '../services/todoService'
-import userService from '../services/userService'
 
 class TodoController {
   async saveTodo(req: Request, res: Response) {
@@ -18,7 +17,7 @@ class TodoController {
     try {
       const userId = req.params.id
 
-      const todos = await userService.getTodosById(userId)
+      const todos = await todoService.getTodosById(userId)
       return res.status(200).json(todos)
     } catch (error) {
       return res.status(500).send('Unable to get todos at this time. Please try again.')
@@ -51,6 +50,22 @@ class TodoController {
     } catch (error) {
       return res.status(500).send('Unable to get todos at this time. Please try again.')
     }
+  }
+
+  async filterTodos(req: Request, res: Response) {
+    const filter = req.params.filterValue
+    const userId = req.params.id
+
+    if (!filter) {
+      return res.status(400).send('Invalid or empty filter result was provided.')
+    }
+
+    if (!userId) {
+      return res.status(400).send('Invalid userId was provided.')
+    }
+
+    const filteredTodos = await todoService.filterTodos(userId, filter)
+    return res.status(200).json(filteredTodos)
   }
 }
 
