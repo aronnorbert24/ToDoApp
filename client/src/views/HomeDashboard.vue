@@ -1,6 +1,7 @@
 <template>
-  <div class="ml-auto mr-auto h-screen w-screen computer:w-4/12">
-    <ToDoHeader @showForm="toggleForm" />
+  <div v-if="isLogoutPopupVisible" class="absolute z-10 h-full w-full bg-black opacity-50 phone:hidden"></div>
+  <div class="z-0 ml-auto mr-auto h-screen w-screen computer:w-4/12">
+    <ToDoHeader @showForm="toggleForm" @logout="toggleLogoutPopup" />
     <ToDoSearch v-if="filteredTodos.length || searchQuery.length" @searchToDos="searchToDos" />
     <p v-if="!filteredTodos.length && searchQuery.length" class="mt-6 font-header text-xl font-semibold text-black">
       There are no todos with that title/description
@@ -17,17 +18,24 @@
     <EmptyListImage v-if="isEmptyImageVisible" class="ml-auto mr-auto" />
     <ToDoList :todos="filteredTodos" @editToDo="editToDo" @deleteToDo="removeToDo" @toggleCheck="toggleCheck" />
   </div>
+  <ConfirmPopup
+    v-if="isLogoutPopupVisible"
+    :message="logoutMessage"
+    class="left-32"
+    @confirm="logoutUser"
+    @cancel="toggleLogoutPopup"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, Ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import ToDoForm from '../components/todos/ToDoForm.vue'
 import ToDoList from '../components/todos/ToDoList.vue'
 import ToDoHeader from '../components/header/ToDoHeader.vue'
 import ToDoSearch from '../components/header/ToDoSearch.vue'
 import ToDoSort from '../components/header/ToDoSort.vue'
+import ConfirmPopup from '../components/todos/ConfirmPopup.vue'
 import EmptyListImage from '../components/icons/EmptyListImage.vue'
 import { saveTodo, getTodos, editTodo, deleteTodo, filterTodos, todoSort } from '../services/todo'
 import { Todo } from '../types/todo'
@@ -39,6 +47,8 @@ const searchQuery = ref('')
 const activeOrder = ref('')
 const activeProperty = ref('')
 const isSortActive = ref(false)
+const isLogoutPopupVisible = ref(false)
+const logoutMessage = 'Are you sure you want to logout?'
 const userId = localStorage.getItem('_id')!
 const todos = ref<Todo[]>([])
 const todo = ref<Todo>({
@@ -58,10 +68,9 @@ function saveToLocalStorage() {
 
 async function getFromLocalStorage() {
   try {
-    const router = useRouter()
     const token = localStorage.getItem('token')
     if (!token) {
-      router.push({ name: 'Login' })
+      window.location.href = '/'
       return []
     }
     const newTodos = await getTodos(userId)
@@ -155,6 +164,15 @@ async function sortTodos(property: string, order: string, isActive: boolean) {
   isSortActive.value = isActive
   filteredTodos.value = await todoSort(userId, property, order)
   todos.value = filteredTodos.value
+}
+
+function logoutUser() {
+  localStorage.clear()
+  window.location.href = '/'
+}
+
+function toggleLogoutPopup() {
+  isLogoutPopupVisible.value = !isLogoutPopupVisible.value
 }
 
 onClickOutside(closeFormRef, toggleForm)
