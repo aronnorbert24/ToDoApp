@@ -153,7 +153,8 @@ async function sortTodos(property: string, order: string, isActive: boolean) {
   activeOrder.value = order
   activeProperty.value = property
   isSortActive.value = isActive
-  await todoSort(userId, property, order)
+  filteredTodos.value = await todoSort(userId, property, order)
+  todos.value = filteredTodos.value
 }
 
 onClickOutside(closeFormRef, toggleForm)

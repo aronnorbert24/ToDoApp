@@ -4,7 +4,7 @@ let activeOrder = ''
 
 export function sortTodos(todos: Todo[], property: string, order: string) {
   activeOrder = order
-  todos.sort((a: Todo, b: Todo) => {
+  return todos.sort((a: Todo, b: Todo) => {
     switch (property) {
       case 'Title':
         return sortByTitle(a, b)
