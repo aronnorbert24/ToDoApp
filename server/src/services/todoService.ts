@@ -1,5 +1,5 @@
 import TodoModel, { Todo, Archive } from '../models/Todo'
-import { sortTodos } from '../helpers/sortTodos'
+import { sortTodos, filteredTodos } from '../helpers/helper'
 
 class TodoService {
   async saveTodo(data: Todo) {
@@ -50,17 +50,12 @@ class TodoService {
 
   async filterTodos(userId: string, filter: string) {
     const todos = await this.getTodosById(userId)
-    return todos.filter((todo: Todo) => {
-      const filterSmall = filter.toLowerCase()
-      const titleSmall = todo.title.toLowerCase()
-      const descSmall = todo.description.toLowerCase()
-      return titleSmall.includes(filterSmall) || descSmall.includes(filterSmall)
-    })
+    return filteredTodos(todos, filter)
   }
 
-  async sortTodos(userId: string, sortProperty: string, sortOrder: string) {
-    const todos = await this.getTodosById(userId)
-    const sortedTodos = sortTodos(todos, sortProperty, sortOrder)
+  async sortTodos(userId: string, sortProperty: string, sortOrder: string, filter: string) {
+    const newTodos: Todo[] = filter ? await this.filterTodos(userId, filter) : await this.getTodosById(userId)
+    const sortedTodos = sortTodos(newTodos, sortProperty, sortOrder)
     return sortedTodos
   }
 }

@@ -50,3 +50,13 @@ function sortByPriority(a: Todo, b: Todo) {
   const next = priorityOrder.indexOf(b.priority)
   return activeOrder === 'ascending' ? previous - next : next - previous
 }
+
+export function filteredTodos(todos: Todo[], filter: string) {
+  const filteredTodos = todos.filter((todo: Todo) => {
+    const filterSmall = filter.toLowerCase()
+    const titleSmall = todo.title.toLowerCase()
+    const descSmall = todo.description.toLowerCase()
+    return titleSmall.includes(filterSmall) || descSmall.includes(filterSmall)
+  })
+  return filteredTodos
+}

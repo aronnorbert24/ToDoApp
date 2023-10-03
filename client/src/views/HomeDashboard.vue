@@ -37,7 +37,7 @@ import ToDoSearch from '../components/header/ToDoSearch.vue'
 import ToDoSort from '../components/header/ToDoSort.vue'
 import ConfirmPopup from '../components/todos/ConfirmPopup.vue'
 import EmptyListImage from '../components/icons/EmptyListImage.vue'
-import { saveTodo, getTodos, editTodo, deleteTodo, filterTodos, todoSort } from '../services/todo'
+import { saveTodo, getTodos, editTodo, deleteTodo } from '../services/todo'
 import { Todo } from '../types/todo'
 
 const isFormShown: Ref<boolean> = ref(false)
@@ -73,7 +73,7 @@ async function getFromLocalStorage() {
       window.location.href = '/'
       return []
     }
-    const newTodos = await getTodos(userId)
+    const newTodos = await getTodos(userId, activeProperty.value, activeOrder.value, searchQuery.value)
     todos.value = newTodos
     filteredTodos.value = newTodos
   } catch (error) {
@@ -149,9 +149,7 @@ function toggleForm() {
 
 async function searchToDos(item: string) {
   searchQuery.value = item
-  filteredTodos.value = !searchQuery.value.length
-    ? (filteredTodos.value = todos.value)
-    : await filterTodos(userId, searchQuery.value)
+  if (searchQuery.value.length) await getFromLocalStorage()
 }
 
 function disactivateSort(isActive: boolean) {
@@ -162,8 +160,7 @@ async function sortTodos(property: string, order: string, isActive: boolean) {
   activeOrder.value = order
   activeProperty.value = property
   isSortActive.value = isActive
-  filteredTodos.value = await todoSort(userId, property, order)
-  todos.value = filteredTodos.value
+  await getFromLocalStorage()
 }
 
 function logoutUser() {

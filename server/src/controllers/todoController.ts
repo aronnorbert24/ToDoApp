@@ -16,6 +16,23 @@ class TodoController {
   async getTodos(req: Request, res: Response) {
     try {
       const userId = req.params.id
+      const sortProperty = req.query.sortProperty as string
+      const sortOrder = req.query.sortOrder as string
+      const filter = req.query.filter as string
+
+      if (!userId) {
+        return res.status(400).send('Invalid userId was provided.')
+      }
+
+      if (sortOrder && sortProperty) {
+        const todos = await todoService.sortTodos(userId, sortProperty, sortOrder, filter)
+        return res.status(200).json(todos)
+      }
+
+      if (filter) {
+        const todos = await todoService.filterTodos(userId, filter)
+        return res.status(200).json(todos)
+      }
 
       const todos = await todoService.getTodosById(userId)
       return res.status(200).json(todos)
@@ -49,51 +66,6 @@ class TodoController {
       return res.status(200).send('Todo successfully deleted')
     } catch (error) {
       return res.status(500).send('Unable to get todos at this time. Please try again.')
-    }
-  }
-
-  async filterTodos(req: Request, res: Response) {
-    try {
-      const filter = req.params.filterValue
-      const userId = req.params.id
-
-      if (!filter) {
-        return res.status(400).send('Invalid or empty filter result was provided.')
-      }
-
-      if (!userId) {
-        return res.status(400).send('Invalid userId was provided.')
-      }
-
-      const filteredTodos = await todoService.filterTodos(userId, filter)
-      return res.status(200).json(filteredTodos)
-    } catch (error) {
-      return res.status(500).send('Unable to filter todos at this time. Please try again later.')
-    }
-  }
-
-  async sortTodos(req: Request, res: Response) {
-    try {
-      const sortProperty = req.params.property
-      const sortOrder = req.params.order
-      const userId = req.params.id
-
-      if (!sortProperty) {
-        return res.status(400).send('Invalid or empty sort property was provided.')
-      }
-
-      if (!sortOrder) {
-        return res.status(400).send('Invalid or empty sort order was provided.')
-      }
-
-      if (!userId) {
-        return res.status(400).send('Invalid userId was provided.')
-      }
-
-      const sortedTodos = await todoService.sortTodos(userId, sortProperty, sortOrder)
-      return res.status(200).json(sortedTodos)
-    } catch (error) {
-      return res.status(500).send('Unable to sort todos at this time. Please try again later.')
     }
   }
 }
