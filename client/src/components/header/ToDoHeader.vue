@@ -5,14 +5,12 @@
     >
       Welcome {{ firstName }} {{ lastName }}
     </p>
-    <RouterLink
+    <div
       class="ml-auto h-[52px] w-[120px] rounded-2xl border-0 bg-neutral-200 pt-3 text-center leading-8 text-black transition-transform duration-300 ease-in-out hover:scale-110 phone:hidden"
-      href="#"
-      to="/"
-      @click.prevent="logout"
+      @click.prevent="emit('logout')"
     >
       Log Out
-    </RouterLink>
+    </div>
     <button class="w-[66px] border-0 bg-transparent computer:hidden">
       <LogOutIcon />
     </button>
@@ -35,16 +33,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
 import PlusIcon from './PlusIcon.vue'
 import LogOutIcon from './LogOutIcon.vue'
 
-const emit = defineEmits(['showForm'])
+const emit = defineEmits(['showForm', 'logout'])
 
 const firstName = ref(localStorage.getItem('firstName'))
 const lastName = ref(localStorage.getItem('lastName'))
-
-function logout() {
-  localStorage.clear()
-}
 </script>

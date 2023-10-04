@@ -49,10 +49,12 @@
         Delete
       </button>
     </div>
-    <DeletePopup
+    <ConfirmPopup
       v-if="isDeletePopupVisible"
-      @deleteToDo="deleteToDo"
-      @cancelDelete="toggleDeletePopup"
+      :message="deleteMessage"
+      class="ml-36"
+      @confirm="deleteToDo"
+      @cancel="toggleDeletePopup"
       ref="hideDeletePopupRef"
     />
   </div>
@@ -62,7 +64,7 @@
 import { ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import ToDoPriority from './ToDoPriority.vue'
-import DeletePopup from './DeletePopup.vue'
+import ConfirmPopup from '../baseComponents/ConfirmPopup.vue'
 import ErrorMessage from '../baseComponents/ErrorMessage.vue'
 import { Todo } from '../../types/todo'
 import { formatDate } from '../../helper/helpers'
@@ -88,6 +90,8 @@ const isDropdownShowing = ref(false)
 const isDeletePopupVisible = ref(false)
 const hideDeletePopupRef = ref(null)
 const errorMessage = ref('')
+const deleteMessage =
+  'Are you sure you want to delete this item? This operation is permanent and you will not be able to undo this action.'
 const toDoDate = ref(formatDate(updatedToDo.value.dueDate, 'form'))
 const currentDate = ref(formatDate(new Date(), 'form'))
 

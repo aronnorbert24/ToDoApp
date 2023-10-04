@@ -12,6 +12,9 @@ export async function loginUser(email: string, password: string) {
     localStorage.setItem('lastName', response.data.foundUser.lastName)
     localStorage.setItem('_id', response.data.foundUser._id)
     localStorage.setItem('token', response.data.accessToken)
+    if (response.data.accessToken) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`
+    }
     return response.data.foundUser
   } catch (error) {
     console.error(error)
@@ -31,6 +34,9 @@ export async function registerUser(data: User) {
     localStorage.setItem('lastName', response.data.savedUser.lastName)
     localStorage.setItem('_id', response.data.savedUser._id)
     localStorage.setItem('token', response.data.accessToken)
+    if (response.data.accessToken) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`
+    }
     return response.data.savedUser
   } catch (error) {
     console.error(error)

@@ -1,8 +1,8 @@
 <template>
   <div
     @click="toggleEditState"
-    class="mt-8 h-fit w-full rounded-2xl border-2 border-black bg-transparent phone:flex phone:h-[82px] phone:flex-row-reverse phone:items-center phone:justify-between phone:space-x-4"
-    :class="getEditFormClass"
+    class="mt-8 h-fit w-full rounded-2xl border-2 bg-transparent phone:flex phone:h-[82px] phone:flex-row-reverse phone:items-center phone:justify-between phone:space-x-4"
+    :class="[getEditFormClass, getBorderColor]"
   >
     <div class="flex h-fit w-full items-center justify-between">
       <div class="items-center justify-between phone:flex phone:h-fit phone:flex-col computer:w-9/12">
@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import ToDoForm from './ToDoForm.vue'
 import ToDoChecked from './ToDoChecked.vue'
@@ -71,6 +71,7 @@ const emit = defineEmits<{
   (e: 'editToDo', todo: Todo): void
   (e: 'deleteToDo', id: string): void
   (e: 'toggleCheck', isChecked: boolean, id: string): void
+  (e: 'todoDueToday', todo: Todo): void
 }>()
 
 const priorityClass: Record<string, string> = {
@@ -88,6 +89,18 @@ const formattedDate = computed(() => {
 function getPriorityClass(priority: string) {
   return priorityClass[priority]
 }
+
+const getBorderColor = computed(() => {
+  const date = new Date(props.todo.dueDate).getDate()
+  const today = new Date(Date.now()).getDate()
+  if (date == today) {
+    return 'border-red-600'
+  }
+  if (date == today + 1) {
+    return 'border-yellow-500'
+  }
+  return 'border-black'
+})
 
 const getEditFormClass = computed(() => {
   return isFormEditable.value ? 'hidden phone:hidden' : 'block'
@@ -111,6 +124,23 @@ function deleteToDo(id: string) {
   toggleEditState()
   emit('deleteToDo', id)
 }
+
+function isTodoDueToday() {
+  const date = new Date(props.todo.dueDate)
+  const today = new Date(Date.now())
+
+  if (date.getDate() == today.getDate() && props.todo.isChecked === false) {
+    emit('todoDueToday', props.todo)
+  }
+
+  if (date < today && date.getDate() !== today.getDate()) {
+    deleteToDo(props.todo._id)
+  }
+}
+
+onMounted(() => {
+  isTodoDueToday()
+})
 
 onClickOutside(closeFormRef, toggleEditState)
 </script>

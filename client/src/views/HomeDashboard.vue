@@ -1,6 +1,8 @@
 <template>
-  <div class="ml-auto mr-auto h-screen w-screen computer:w-4/12">
-    <ToDoHeader @showForm="toggleForm" />
+  <div v-if="isLogoutPopupVisible" class="absolute z-10 h-full w-full bg-black opacity-50 phone:hidden"></div>
+  <div v-if="isTodoPopupVisible" class="absolute z-10 h-full w-full bg-black opacity-50 phone:hidden"></div>
+  <div class="z-0 ml-auto mr-auto h-screen w-screen computer:w-4/12">
+    <ToDoHeader @showForm="toggleForm" @logout="toggleLogoutPopup" />
     <ToDoSearch v-if="filteredTodos.length || searchQuery.length" @searchToDos="searchToDos" />
     <p v-if="!filteredTodos.length && searchQuery.length" class="mt-6 font-header text-xl font-semibold text-black">
       There are no todos with that title/description
@@ -15,30 +17,58 @@
       ref="closeFormRef"
     />
     <EmptyListImage v-if="isEmptyImageVisible" class="ml-auto mr-auto" />
-    <ToDoList :todos="filteredTodos" @editToDo="editToDo" @deleteToDo="removeToDo" @toggleCheck="toggleCheck" />
+    <ToDoList
+      :todos="filteredTodos"
+      @editToDo="editToDo"
+      @deleteToDo="removeToDo"
+      @toggleCheck="toggleCheck"
+      @todoDueToday="todoDueToday"
+    />
   </div>
+  <ConfirmPopup
+    v-if="isLogoutPopupVisible"
+    :message="logoutMessage"
+    class="left-20 ml-96"
+    @confirm="logoutUser"
+    @cancel="toggleLogoutPopup"
+    ref="closeLogoutPopupRef"
+  />
+  <TodoPopup
+    v-if="isTodoPopupVisible"
+    :todos="todoMessage"
+    class="left-20 ml-96"
+    @cancel="toggleTodoPopup"
+    ref="closeTodoPopupRef"
+  />
 </template>
 
 <script setup lang="ts">
 import { ref, Ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { onClickOutside } from '@vueuse/core'
 import ToDoForm from '../components/todos/ToDoForm.vue'
 import ToDoList from '../components/todos/ToDoList.vue'
+import TodoPopup from '../components/todos/TodoPopup.vue'
 import ToDoHeader from '../components/header/ToDoHeader.vue'
 import ToDoSearch from '../components/header/ToDoSearch.vue'
 import ToDoSort from '../components/header/ToDoSort.vue'
+import ConfirmPopup from '../components/baseComponents/ConfirmPopup.vue'
 import EmptyListImage from '../components/icons/EmptyListImage.vue'
-import { saveTodo, getTodos, editTodo, deleteTodo, filterTodos, todoSort } from '../services/todo'
+import { saveTodo, getTodos, editTodo, deleteTodo } from '../services/todo'
 import { Todo } from '../types/todo'
 
 const isFormShown: Ref<boolean> = ref(false)
 const isEmptyImageVisible = computed(() => !isFormShown.value && !todos.value.length)
 const closeFormRef = ref(null)
+const closeLogoutPopupRef = ref(null)
+const closeTodoPopupRef = ref(null)
 const searchQuery = ref('')
 const activeOrder = ref('')
 const activeProperty = ref('')
 const isSortActive = ref(false)
+const isLogoutPopupVisible = ref(false)
+const isTodoPopupVisible = ref(false)
+const logoutMessage = 'Are you sure you want to logout?'
+const todoMessage = ref<string[]>([])
 const userId = localStorage.getItem('_id')!
 const todos = ref<Todo[]>([])
 const todo = ref<Todo>({
@@ -58,13 +88,12 @@ function saveToLocalStorage() {
 
 async function getFromLocalStorage() {
   try {
-    const router = useRouter()
     const token = localStorage.getItem('token')
     if (!token) {
-      router.push({ name: 'Login' })
+      window.location.href = '/'
       return []
     }
-    const newTodos = await getTodos(userId)
+    const newTodos = await getTodos(userId, activeProperty.value, activeOrder.value, searchQuery.value)
     todos.value = newTodos
     filteredTodos.value = newTodos
   } catch (error) {
@@ -140,9 +169,7 @@ function toggleForm() {
 
 async function searchToDos(item: string) {
   searchQuery.value = item
-  filteredTodos.value = !searchQuery.value.length
-    ? (filteredTodos.value = todos.value)
-    : await filterTodos(userId, searchQuery.value)
+  await getFromLocalStorage()
 }
 
 function disactivateSort(isActive: boolean) {
@@ -153,11 +180,30 @@ async function sortTodos(property: string, order: string, isActive: boolean) {
   activeOrder.value = order
   activeProperty.value = property
   isSortActive.value = isActive
-  filteredTodos.value = await todoSort(userId, property, order)
-  todos.value = filteredTodos.value
+  await getFromLocalStorage()
+}
+
+function todoDueToday(todo: Todo) {
+  todoMessage.value.push(todo.title)
+  setTimeout(toggleTodoPopup, 100)
+}
+
+function logoutUser() {
+  localStorage.clear()
+  window.location.href = '/'
+}
+
+function toggleLogoutPopup() {
+  isLogoutPopupVisible.value = !isLogoutPopupVisible.value
+}
+
+function toggleTodoPopup() {
+  isTodoPopupVisible.value = !isTodoPopupVisible.value
 }
 
 onClickOutside(closeFormRef, toggleForm)
+onClickOutside(closeLogoutPopupRef, toggleLogoutPopup)
+onClickOutside(closeTodoPopupRef, toggleTodoPopup)
 
 onMounted(async () => {
   await getFromLocalStorage()

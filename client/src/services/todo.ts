@@ -25,9 +25,15 @@ export async function saveTodo(data: Todo) {
   }
 }
 
-export async function getTodos(_id: string) {
+export async function getTodos(_id: string, sortProperty: string, sortOrder: string, filter: string) {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo/${_id}`)
+    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo/${_id}`, {
+      params: {
+        sortProperty: sortProperty,
+        sortOrder: sortOrder,
+        filter: filter,
+      },
+    })
     localStorage.setItem('todos', JSON.stringify(response.data))
 
     return response.data
@@ -57,26 +63,6 @@ export async function editTodo(_id: string, todo: Todo) {
 export async function deleteTodo(id: string) {
   try {
     await axios.delete(`${import.meta.env.VITE_BASE_URL}/todo/delete/${id}`)
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-}
-
-export async function filterTodos(id: string, filter: string) {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo/${id}/${filter}`)
-    return response.data
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-}
-
-export async function todoSort(id: string, property: string, order: string) {
-  try {
-    const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/todo/${id}/${property}/${order}`)
-    return response.data
   } catch (error) {
     console.error(error)
     throw error
