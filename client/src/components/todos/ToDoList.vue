@@ -1,7 +1,13 @@
 <template>
   <transition-group name="todo" tag="ul" class="relative phone:top-16">
     <li v-for="todo in todos" :key="todo._id">
-      <ToDoItem :todo="todo" @editToDo="editToDo" @deleteToDo="deleteToDo" @toggleCheck="toggleCheck" />
+      <ToDoItem
+        :todo="todo"
+        @editToDo="editToDo"
+        @deleteToDo="deleteToDo"
+        @toggleCheck="toggleCheck"
+        @todoDueToday="todoDueToday"
+      />
     </li>
   </transition-group>
 </template>
@@ -20,6 +26,7 @@ const emit = defineEmits<{
   (e: 'editToDo', todo: Todo): void
   (e: 'deleteToDo', id: string): void
   (e: 'toggleCheck', isChecked: boolean, id: string): void
+  (e: 'todoDueToday', todo: Todo): void
 }>()
 
 function toggleCheck(isChecked: boolean, id: string) {
@@ -32,6 +39,10 @@ function editToDo(todo: Todo) {
 
 function deleteToDo(id: string) {
   emit('deleteToDo', id)
+}
+
+function todoDueToday(todo: Todo) {
+  emit('todoDueToday', todo)
 }
 </script>
 

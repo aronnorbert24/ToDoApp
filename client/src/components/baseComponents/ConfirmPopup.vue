@@ -1,5 +1,5 @@
 <template>
-  <div class="absolute top-1/4 z-50 m-auto h-fit w-9/12 rounded-2xl border-2 border-black bg-white p-2">
+  <div class="absolute top-1/4 z-50 m-auto h-fit w-6/12 rounded-2xl border-2 border-black bg-white p-2">
     <p>
       {{ message }}
     </p>

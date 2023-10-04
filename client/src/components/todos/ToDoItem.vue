@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import ToDoForm from './ToDoForm.vue'
 import ToDoChecked from './ToDoChecked.vue'
@@ -71,6 +71,7 @@ const emit = defineEmits<{
   (e: 'editToDo', todo: Todo): void
   (e: 'deleteToDo', id: string): void
   (e: 'toggleCheck', isChecked: boolean, id: string): void
+  (e: 'todoDueToday', todo: Todo): void
 }>()
 
 const priorityClass: Record<string, string> = {
@@ -111,6 +112,22 @@ function deleteToDo(id: string) {
   toggleEditState()
   emit('deleteToDo', id)
 }
+
+function isTodoDueToday() {
+  const date = new Date(props.todo.dueDate).getDate()
+  const today = new Date(Date.now()).getDate()
+  console.log('dueDate ' + date)
+  console.log('Today ' + today)
+
+  if (date == today) {
+    console.log('title ' + props.todo.title)
+    emit('todoDueToday', props.todo)
+  }
+}
+
+onMounted(() => {
+  isTodoDueToday()
+})
 
 onClickOutside(closeFormRef, toggleEditState)
 </script>

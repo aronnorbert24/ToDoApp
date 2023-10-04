@@ -50,8 +50,9 @@
       </button>
     </div>
     <ConfirmPopup
-      :message="deleteMessage"
       v-if="isDeletePopupVisible"
+      :message="deleteMessage"
+      class="ml-36"
       @confirm="deleteToDo"
       @cancel="toggleDeletePopup"
       ref="hideDeletePopupRef"
@@ -63,7 +64,7 @@
 import { ref } from 'vue'
 import { onClickOutside } from '@vueuse/core'
 import ToDoPriority from './ToDoPriority.vue'
-import ConfirmPopup from './ConfirmPopup.vue'
+import ConfirmPopup from '../baseComponents/ConfirmPopup.vue'
 import ErrorMessage from '../baseComponents/ErrorMessage.vue'
 import { Todo } from '../../types/todo'
 import { formatDate } from '../../helper/helpers'
