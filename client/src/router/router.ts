@@ -26,11 +26,17 @@ const router = createRouter({
   history: createWebHistory(),
 })
 
-const token = localStorage.getItem('token')
+router.beforeEach((to) => {
+  const token = localStorage.getItem('token')
+  if (!token && to.name === 'Dashboard') {
+    return '/'
+  }
+})
 
 router.beforeEach((to) => {
-  if (!token && to.name !== 'Login') {
-    return '/'
+  const token = localStorage.getItem('token')
+  if (token && to.name !== 'Dashboard') {
+    return '/dashboard'
   }
 })
 
