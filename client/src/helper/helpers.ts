@@ -22,3 +22,10 @@ export function debounce<Params extends unknown[]>(
     }, timeout)
   }
 }
+
+export function setItems(firstName: string, lastName: string, userId: string, token: string) {
+  localStorage.setItem('firstName', firstName)
+  localStorage.setItem('lastName', lastName)
+  localStorage.setItem('_id', userId)
+  localStorage.setItem('token', token)
+}
