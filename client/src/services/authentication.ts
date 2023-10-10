@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { setItems } from '../helper/helpers'
 import { User } from '../types/user'
 
 export async function loginUser(email: string, password: string) {
@@ -7,12 +8,13 @@ export async function loginUser(email: string, password: string) {
       email,
       password,
     })
+    const firstName = response.data.foundUser.firstName
+    const lastName = response.data.foundUser.lastName
+    const userId = response.data.foundUser._id
+    const token = response.data.accessToken
 
-    localStorage.setItem('firstName', response.data.foundUser.firstName)
-    localStorage.setItem('lastName', response.data.foundUser.lastName)
-    localStorage.setItem('_id', response.data.foundUser._id)
-    localStorage.setItem('token', response.data.accessToken)
-    if (response.data.accessToken) {
+    setItems(firstName, lastName, userId, token)
+    if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`
     }
     return response.data.foundUser
@@ -30,11 +32,13 @@ export async function registerUser(data: User) {
       email: data.email,
       password: data.password,
     })
-    localStorage.setItem('firstName', response.data.savedUser.firstName)
-    localStorage.setItem('lastName', response.data.savedUser.lastName)
-    localStorage.setItem('_id', response.data.savedUser._id)
-    localStorage.setItem('token', response.data.accessToken)
-    if (response.data.accessToken) {
+    const firstName = response.data.foundUser.firstName
+    const lastName = response.data.foundUser.lastName
+    const userId = response.data.foundUser._id
+    const token = response.data.accessToken
+
+    setItems(firstName, lastName, userId, token)
+    if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.accessToken}`
     }
     return response.data.savedUser

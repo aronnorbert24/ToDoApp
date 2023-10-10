@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount } from 'vue'
+import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { loginUser } from '../services/authentication'
 import UserInput from '../components/baseComponents/UserInput.vue'
@@ -68,11 +68,4 @@ function isInputValid() {
 
   return true
 }
-
-onBeforeMount(() => {
-  const token = localStorage.getItem('token')
-  if (token) {
-    router.push({ name: 'Dashboard' })
-  }
-})
 </script>

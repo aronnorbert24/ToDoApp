@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount } from 'vue'
+import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import UserInput from '../components/baseComponents/UserInput.vue'
 import ErrorMessage from '../components/baseComponents/ErrorMessage.vue'
@@ -95,11 +95,4 @@ function isInputValid() {
 
   return true
 }
-
-onBeforeMount(() => {
-  const token = localStorage.getItem('token')
-  if (token) {
-    router.push({ name: 'Dashboard' })
-  }
-})
 </script>

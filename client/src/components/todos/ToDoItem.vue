@@ -93,10 +93,10 @@ function getPriorityClass(priority: string) {
 const getBorderColor = computed(() => {
   const date = new Date(props.todo.dueDate).getDate()
   const today = new Date(Date.now()).getDate()
-  if (date == today) {
+  if (date === today) {
     return 'border-red-600'
   }
-  if (date == today + 1) {
+  if (date === today + 1) {
     return 'border-yellow-500'
   }
   return 'border-black'
@@ -125,11 +125,11 @@ function deleteToDo(id: string) {
   emit('deleteToDo', id)
 }
 
-function isTodoDueToday() {
+function todoDueToday() {
   const date = new Date(props.todo.dueDate)
   const today = new Date(Date.now())
 
-  if (date.getDate() == today.getDate() && props.todo.isChecked === false) {
+  if (date.getDate() === today.getDate() && !props.todo.isChecked) {
     emit('todoDueToday', props.todo)
   }
 
@@ -139,7 +139,7 @@ function isTodoDueToday() {
 }
 
 onMounted(() => {
-  isTodoDueToday()
+  todoDueToday()
 })
 
 onClickOutside(closeFormRef, toggleEditState)

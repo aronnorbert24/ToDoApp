@@ -86,13 +86,8 @@ function saveToLocalStorage() {
   localStorage.setItem('todos', JSON.stringify(todos.value))
 }
 
-async function getFromLocalStorage() {
+async function getTodosFromDatabase() {
   try {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      window.location.href = '/'
-      return []
-    }
     const newTodos = await getTodos(userId, activeProperty.value, activeOrder.value, searchQuery.value)
     todos.value = newTodos
     filteredTodos.value = newTodos
@@ -169,7 +164,7 @@ function toggleForm() {
 
 async function searchToDos(item: string) {
   searchQuery.value = item
-  await getFromLocalStorage()
+  await getTodosFromDatabase()
 }
 
 function disactivateSort(isActive: boolean) {
@@ -180,7 +175,7 @@ async function sortTodos(property: string, order: string, isActive: boolean) {
   activeOrder.value = order
   activeProperty.value = property
   isSortActive.value = isActive
-  await getFromLocalStorage()
+  await getTodosFromDatabase()
 }
 
 function todoDueToday(todo: Todo) {
@@ -206,7 +201,7 @@ onClickOutside(closeLogoutPopupRef, toggleLogoutPopup)
 onClickOutside(closeTodoPopupRef, toggleTodoPopup)
 
 onMounted(async () => {
-  await getFromLocalStorage()
+  await getTodosFromDatabase()
 })
 </script>
 <style scoped></style>

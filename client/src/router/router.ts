@@ -26,4 +26,18 @@ const router = createRouter({
   history: createWebHistory(),
 })
 
+router.beforeEach((to) => {
+  const token = localStorage.getItem('token')
+  if (!token && to.name === 'Dashboard') {
+    return '/'
+  }
+})
+
+router.beforeEach((to) => {
+  const token = localStorage.getItem('token')
+  if (token && to.name !== 'Dashboard') {
+    return '/dashboard'
+  }
+})
+
 export default router
